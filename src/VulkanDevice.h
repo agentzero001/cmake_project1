@@ -15,6 +15,5 @@ class VulkanDevice {
         VkPhysicalDevice physicalDevice;
         void pickPhysicalDevice();
         void createLogicalDevice();
-        
         bool isDeviceSuitable();
 };

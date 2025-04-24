@@ -41,5 +41,7 @@ void VulkanDevice::pickPhysicalDevice() {
 }
 
 bool VulkanDevice::isDeviceSuitable() {
+
+
     return true;
 }

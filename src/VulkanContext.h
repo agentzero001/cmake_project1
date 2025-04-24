@@ -18,6 +18,7 @@
 #include <fstream>
 #include "VulkanDevice.h"
 
+
 class VulkanContext {
     public:
 
@@ -25,15 +26,35 @@ class VulkanContext {
         ~VulkanContext();
         void run();
 
+
+        //gives you control to define where and what to display from the validationLayer messengers.
+        static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                                                            VkDebugUtilsMessageTypeFlagsEXT messageType,
+                                                            const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+                                                            void* pUserData) {
+
+            std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+        
+            return VK_FALSE;
+        };
+        
+
     private: 
         GLFWwindow* window;
         VkInstance instance;
         VulkanDevice* m_VulkanDevice;
+        VkDebugUtilsMessengerEXT debugMessenger;
 
         void initVulkan();
         void cleanup();
         void mainLoop();
         void createInstance();
+        bool checkValidationLayerSupport(); 
+        std::vector<const char*> getRequiredExtenstions();
+        void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+        void setupDebugMessenger();
+        VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
+        void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
 
 };
 
