@@ -2,9 +2,6 @@
 
 
 VulkanContext::VulkanContext() {
-    createInstance();
-    m_VulkanDevice = new VulkanDevice(instance);
-    
 
 }
 
@@ -30,6 +27,7 @@ void VulkanContext::mainLoop() {
 }
 
 void VulkanContext::cleanup() {
+    vkDestroyInstance(instance, nullptr);
 
 }
 
@@ -52,4 +50,6 @@ void VulkanContext::createInstance() {
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
         throw std::runtime_error("failed to create instance");
     }
+
+    m_VulkanDevice = new VulkanDevice(instance);
 }
