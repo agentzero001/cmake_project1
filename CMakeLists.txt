@@ -19,7 +19,13 @@ link_directories("C:/Users/jensm/Desktop/local/visual studio/glfw-3.4.bin.WIN64/
 
 
 include_directories("C:/Users/jensm/Desktop/local/glm-1.0.1")
+
 # Source files
-add_executable(cmake_project1 src/main.cpp src/app.h src/app.cpp )
+add_executable(cmake_project1
+                src/main.cpp
+                src/VulkanContext.h
+                src/VulkanContext.cpp
+                src/VulkanDevice.h
+                src/VulkanDevice.cpp)
 
 target_link_libraries(cmake_project1 glfw3 vulkan-1)

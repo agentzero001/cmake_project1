@@ -1,31 +1,42 @@
-#include "app.h"
+#include "VulkanContext.h"
 
 
+VulkanContext::VulkanContext() {
+    createInstance();
+    m_VulkanDevice = new VulkanDevice(instance);
+    
 
-void VulkanApp::run() {
+}
+
+
+VulkanContext::~VulkanContext(){
+
+}
+
+void VulkanContext::run() {
     initVulkan();
     mainLoop();
     cleanup();
 }
 
 
-void VulkanApp::initVulkan() {
-    void createInstance();
+void VulkanContext::initVulkan() {
+    createInstance();
 
 }
 
-void VulkanApp::mainLoop() {
+void VulkanContext::mainLoop() {
 
 }
 
-void VulkanApp::cleanup() {
+void VulkanContext::cleanup() {
 
 }
 
 
 
 
-void VulkanApp::createInstance() {
+void VulkanContext::createInstance() {
     VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName = "Hello Triangle";
@@ -34,17 +45,11 @@ void VulkanApp::createInstance() {
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_0;
 
-
-
     VkInstanceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &appInfo;
 
-
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
         throw std::runtime_error("failed to create instance");
     }
-
-
-
 }
