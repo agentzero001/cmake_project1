@@ -9,7 +9,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(VULKAN_SDK "C:/VulkanSDK/1.3.290.0")
+
+
 find_package(Vulkan REQUIRED)
+
 
 include_directories(${VULKAN_SDK}/Include)
 link_directories(${VULKAN_SDK}/Lib)

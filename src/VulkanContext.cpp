@@ -22,31 +22,47 @@ VulkanContext::~VulkanContext(){
 }
 
 void VulkanContext::run() {
+    initWindow();
     initVulkan();
     mainLoop();
     cleanup();
 }
 
 
+
+void VulkanContext::initWindow() {
+    glfwInit();
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+    window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+}
+
 void VulkanContext::initVulkan() {
     createInstance();
     setupDebugMessenger();
-
+    m_VulkanDevice->pickPhysicalDevice();
+    m_VulkanDevice->createLogicalDevice();
 }
 
 void VulkanContext::mainLoop() {
-
+    while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+    }
 }
 
 void VulkanContext::cleanup() {
+ 
+    m_VulkanDevice->cleanupDevice();
+
     if (enableValidationLayers) {
         DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
     }
-
     
     vkDestroyInstance(instance, nullptr);
+    glfwDestroyWindow(window);
+    glfwTerminate();
 
-    
 }
 
 
@@ -63,6 +79,7 @@ void VulkanContext::createInstance() {
 	appInfo.pEngineName = "No Engine";
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_0;
+
 
     VkInstanceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -91,6 +108,7 @@ void VulkanContext::createInstance() {
     }
 
     m_VulkanDevice = new VulkanDevice(instance);
+    // device = m_VulkanDevice->getDevice();
 }
 
 bool VulkanContext::checkValidationLayerSupport() {
@@ -123,14 +141,12 @@ std::vector<const char*> VulkanContext::getRequiredExtenstions() {
     const char** glfwExtensions;
 
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
+    std::cout << glfwExtensions << std::endl;
     std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
     if (enableValidationLayers) {
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
-
-    std::cout << extensions.size() << std::endl;
 
     return extensions;
 }

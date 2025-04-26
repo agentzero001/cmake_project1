@@ -1,5 +1,6 @@
 #include "VulkanContext.h"
-
+// #include <iostream>
+// #include <GLFW/glfw3.h>
 
 
 int main() {
@@ -18,3 +19,30 @@ int main() {
 
     return EXIT_SUCCESS;
 }
+
+// int main() {
+//     std::cout << "Starting app\n";
+
+//     if (!glfwInit()) {
+//         std::cerr << "Failed to initialize GLFW\n";
+//         return -1;
+//     }
+
+//     GLFWwindow* window = glfwCreateWindow(640, 480, "Hello Window", nullptr, nullptr);
+//     if (!window) {
+//         std::cerr << "Failed to create GLFW window\n";
+//         glfwTerminate();
+//         return -1;
+//     }
+
+//     glfwMakeContextCurrent(window);
+
+//     while (!glfwWindowShouldClose(window)) {
+//         glfwSwapBuffers(window);
+//         glfwPollEvents();
+//     }
+
+//     glfwDestroyWindow(window);
+//     glfwTerminate();
+//     return 0;
+// }

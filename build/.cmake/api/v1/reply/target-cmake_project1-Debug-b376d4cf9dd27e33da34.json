@@ -30,13 +30,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 24,
-				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 15,
+				"line" : 27,
 				"parent" : 0
 			},
 			{
@@ -46,15 +40,15 @@
 				"parent" : 0
 			},
 			{
-				"command" : 2,
+				"command" : 1,
 				"file" : 0,
-				"line" : 31,
+				"line" : 21,
 				"parent" : 0
 			},
 			{
-				"command" : 3,
+				"command" : 2,
 				"file" : 0,
-				"line" : 14,
+				"line" : 34,
 				"parent" : 0
 			},
 			{
@@ -66,7 +60,13 @@
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 21,
+				"line" : 20,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 24,
 				"parent" : 0
 			}
 		]

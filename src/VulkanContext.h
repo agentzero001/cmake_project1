@@ -18,6 +18,9 @@
 #include <fstream>
 #include "VulkanDevice.h"
 
+const uint32_t WIDTH = 800;
+const uint32_t HEIGHT = 600;
+
 
 class VulkanContext {
     public:
@@ -44,7 +47,9 @@ class VulkanContext {
         VkInstance instance;
         VulkanDevice* m_VulkanDevice;
         VkDebugUtilsMessengerEXT debugMessenger;
+        VkDevice device;
 
+        void initWindow();
         void initVulkan();
         void cleanup();
         void mainLoop();
