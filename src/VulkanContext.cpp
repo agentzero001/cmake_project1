@@ -41,8 +41,8 @@ void VulkanContext::initWindow() {
 void VulkanContext::initVulkan() {
     createInstance();
     setupDebugMessenger();
-    m_VulkanDevice->pickPhysicalDevice();
-    m_VulkanDevice->createLogicalDevice();
+    setupDevice();
+    
 }
 
 void VulkanContext::mainLoop() {
@@ -107,7 +107,6 @@ void VulkanContext::createInstance() {
         throw std::runtime_error("failed to create instance");
     }
 
-    m_VulkanDevice = new VulkanDevice(instance);
     // device = m_VulkanDevice->getDevice();
 }
 
@@ -135,6 +134,12 @@ bool VulkanContext::checkValidationLayerSupport() {
     return true;
 }
 
+
+void VulkanContext::setupDevice() {
+    m_VulkanDevice = new VulkanDevice(instance);
+    m_VulkanDevice->pickPhysicalDevice();
+    m_VulkanDevice->createLogicalDevice();
+}
 
 std::vector<const char*> VulkanContext::getRequiredExtenstions() {
     uint32_t glfwExtensionCount = 0;

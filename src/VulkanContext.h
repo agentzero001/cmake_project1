@@ -54,6 +54,7 @@ class VulkanContext {
         void cleanup();
         void mainLoop();
         void createInstance();
+        void setupDevice();
         bool checkValidationLayerSupport(); 
         std::vector<const char*> getRequiredExtenstions();
         void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
