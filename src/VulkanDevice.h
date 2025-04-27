@@ -4,9 +4,11 @@
 #include <iostream>
 #include <vector>
 #include <optional>
+#include <set>
 
 struct QueueFamilyIndices { 
     std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
 
     bool isComplete();
 };
@@ -14,7 +16,7 @@ struct QueueFamilyIndices {
 
 class VulkanDevice {
     public:
-        VulkanDevice(VkInstance instance);//, VkSurfaceKHR surface);
+        VulkanDevice(VkInstance instance, VkSurfaceKHR surface);
         ~VulkanDevice();
         
         
@@ -27,9 +29,11 @@ class VulkanDevice {
 
     private:
         VkInstance instance;
+        VkSurfaceKHR surface;
         VkPhysicalDevice physicalDevice;
         VkDevice device;
         VkQueue graphicsQueue;
+        VkQueue presentQueue;
 
 
         bool isDeviceSuitable(VkPhysicalDevice device);

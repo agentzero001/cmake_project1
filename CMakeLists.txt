@@ -29,6 +29,9 @@ add_executable(cmake_project1
                 src/VulkanContext.h
                 src/VulkanContext.cpp
                 src/VulkanDevice.h
-                src/VulkanDevice.cpp)
+                src/VulkanDevice.cpp
+                src/VulkanDebug.h
+                src/VulkanDebug.cpp
+                )
 
 target_link_libraries(cmake_project1 glfw3 vulkan-1)

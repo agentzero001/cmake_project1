@@ -73,6 +73,14 @@ build CMakeFiles\cmake_project1.dir\src\VulkanDevice.cpp.obj: CXX_COMPILER__cmak
   TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\
   TARGET_PDB = bin\cmake_project1.pdb
 
+build CMakeFiles\cmake_project1.dir\src\VulkanDebug.cpp.obj: CXX_COMPILER__cmake_project1_unscanned_Debug C$:\Users\jensm\Desktop\cmake_project1\src\VulkanDebug.cpp || cmake_object_order_depends_target_cmake_project1
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
+  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1
+  OBJECT_DIR = CMakeFiles\cmake_project1.dir
+  OBJECT_FILE_DIR = CMakeFiles\cmake_project1.dir\src
+  TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\
+  TARGET_PDB = bin\cmake_project1.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target cmake_project1
@@ -81,7 +89,7 @@ build CMakeFiles\cmake_project1.dir\src\VulkanDevice.cpp.obj: CXX_COMPILER__cmak
 #############################################
 # Link the executable bin\cmake_project1.exe
 
-build bin\cmake_project1.exe: CXX_EXECUTABLE_LINKER__cmake_project1_Debug CMakeFiles\cmake_project1.dir\src\main.cpp.obj CMakeFiles\cmake_project1.dir\src\VulkanContext.cpp.obj CMakeFiles\cmake_project1.dir\src\VulkanDevice.cpp.obj
+build bin\cmake_project1.exe: CXX_EXECUTABLE_LINKER__cmake_project1_Debug CMakeFiles\cmake_project1.dir\src\main.cpp.obj CMakeFiles\cmake_project1.dir\src\VulkanContext.cpp.obj CMakeFiles\cmake_project1.dir\src\VulkanDevice.cpp.obj CMakeFiles\cmake_project1.dir\src\VulkanDebug.cpp.obj
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = glfw3.lib  vulkan-1.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib

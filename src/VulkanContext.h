@@ -17,6 +17,7 @@
 #include <set>
 #include <fstream>
 #include "VulkanDevice.h"
+#include "VulkanDebug.h"
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -25,29 +26,17 @@ const uint32_t HEIGHT = 600;
 class VulkanContext {
     public:
 
-        VulkanContext();
-        ~VulkanContext();
-        void run();
-
-
-        //gives you control to define where and what to display from the validationLayer messengers.
-        static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                                                            VkDebugUtilsMessageTypeFlagsEXT messageType,
-                                                            const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-                                                            void* pUserData) {
-
-            std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
-        
-            return VK_FALSE;
-        };
-        
+        // VulkanContext();
+        // ~VulkanContext();
+        void run();        
 
     private: 
         GLFWwindow* window;
+        VkSurfaceKHR surface;
         VkInstance instance;
         VulkanDevice* m_VulkanDevice;
-        VkDebugUtilsMessengerEXT debugMessenger;
-        VkDevice device;
+        //VkDebugUtilsMessengerEXT debugMessenger;
+        
 
         void initWindow();
         void initVulkan();
@@ -56,11 +45,12 @@ class VulkanContext {
         void createInstance();
         void setupDevice();
         bool checkValidationLayerSupport(); 
+        void createSurface();
         std::vector<const char*> getRequiredExtenstions();
-        void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-        void setupDebugMessenger();
-        VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
-        void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
+        //void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+        //void setupDebugMessenger();
+        //VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
+        //void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
 
 };
 
