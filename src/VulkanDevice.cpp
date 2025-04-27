@@ -47,10 +47,27 @@ void VulkanDevice::pickPhysicalDevice() {
 bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device) {
     QueueFamilyIndices indices = findQueueFamilies(device);
 
+    bool extensionsSupported = checkDeviceExtensionSupport(device);
 
-    return true;
+    return indices.isComplete() && extensionsSupported;
 }
 
+bool VulkanDevice::checkDeviceExtensionSupport(VkPhysicalDevice device) {
+    
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+    std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+
+    for (const auto& extension : availableExtensions) {
+        requiredExtensions.erase(extension.extensionName);
+    }
+
+    return requiredExtensions.empty();
+}
 
 
 QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device) {
@@ -58,7 +75,8 @@ QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device) {
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
 
-
+    std::cout << physicalDevice << std::endl;
+    std::cout << device << std::endl;
 
     std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
 
@@ -115,7 +133,8 @@ void VulkanDevice::createLogicalDevice() {
     createInfo.pQueueCreateInfos = queueCreateInfos.data();
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     createInfo.pEnabledFeatures = &deviceFeatures;
-    createInfo.enabledExtensionCount = 0;
+    createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+    createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
     if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create logical device");
@@ -131,5 +150,3 @@ void VulkanDevice::createLogicalDevice() {
 void VulkanDevice::cleanupDevice() {
     vkDestroyDevice(device, nullptr);
 }
-
-

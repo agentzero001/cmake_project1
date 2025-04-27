@@ -1,18 +1,7 @@
 # ninja log v6
-43	1250	7674813005213339	CMakeFiles/cmake_project1.dir/src/main.cpp.obj	129e64366c17e010
+30	880	7674869608255167	CMakeFiles/cmake_project1.dir/src/main.cpp.obj	129e64366c17e010
 28	1001	7672093961999163	CMakeFiles/cmake_project1.dir/src/app.cpp.obj	c457f776a7c9b8e3
-1265	1698	7674813017417116	bin/cmake_project1.exe	ffca84cc9d15ce02
-51	1264	7674813005297121	CMakeFiles/cmake_project1.dir/src/VulkanContext.cpp.obj	955017c6b5d0ef35
-49	1194	7674564520654747	CMakeFiles/cmake_project1.dir/src/VulkanDevice.cpp.obj	5cc5fb24197da6b9
-43	786	7674821477158241	CMakeFiles/cmake_project1.dir/src/VulkanDebug.cpp.obj	920098df4e343422
-30	1018	7674821477012121	CMakeFiles/cmake_project1.dir/src/main.cpp.obj	129e64366c17e010
-37	1028	7674821477113058	CMakeFiles/cmake_project1.dir/src/VulkanContext.cpp.obj	955017c6b5d0ef35
-1029	1260	7674821487041608	bin/cmake_project1.exe	7a0591f152687b24
-24	523	7674824723503538	CMakeFiles/cmake_project1.dir/src/VulkanDebug.cpp.obj	920098df4e343422
-12	737	7674824723384592	CMakeFiles/cmake_project1.dir/src/main.cpp.obj	129e64366c17e010
-18	746	7674824723428829	CMakeFiles/cmake_project1.dir/src/VulkanContext.cpp.obj	955017c6b5d0ef35
-30	736	7674825135911213	CMakeFiles/cmake_project1.dir/src/main.cpp.obj	129e64366c17e010
-36	745	7674825136010668	CMakeFiles/cmake_project1.dir/src/VulkanContext.cpp.obj	955017c6b5d0ef35
-757	927	7674825143215828	bin/cmake_project1.exe	7a0591f152687b24
-11	704	7674826372050918	CMakeFiles/cmake_project1.dir/src/VulkanContext.cpp.obj	955017c6b5d0ef35
-705	873	7674826379093104	bin/cmake_project1.exe	7a0591f152687b24
+584	759	7674870928751974	bin/cmake_project1.exe	7a0591f152687b24
+40	860	7674869608326709	CMakeFiles/cmake_project1.dir/src/VulkanContext.cpp.obj	955017c6b5d0ef35
+13	583	7674870923055713	CMakeFiles/cmake_project1.dir/src/VulkanDevice.cpp.obj	5cc5fb24197da6b9
+22	533	7674827563032984	CMakeFiles/cmake_project1.dir/src/VulkanDebug.cpp.obj	920098df4e343422

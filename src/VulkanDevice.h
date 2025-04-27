@@ -6,6 +6,11 @@
 #include <optional>
 #include <set>
 
+
+const std::vector<const char*> deviceExtensions = {
+	VK_KHR_SWAPCHAIN_EXTENSION_NAME
+};
+
 struct QueueFamilyIndices { 
     std::optional<uint32_t> graphicsFamily;
     std::optional<uint32_t> presentFamily;
@@ -38,8 +43,6 @@ class VulkanDevice {
 
         bool isDeviceSuitable(VkPhysicalDevice device);
         QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-        
-
-        
+        bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 
 };

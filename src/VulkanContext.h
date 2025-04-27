@@ -26,8 +26,7 @@ const uint32_t HEIGHT = 600;
 class VulkanContext {
     public:
 
-        // VulkanContext();
-        // ~VulkanContext();
+        
         void run();        
 
     private: 
@@ -35,7 +34,7 @@ class VulkanContext {
         VkSurfaceKHR surface;
         VkInstance instance;
         VulkanDevice* m_VulkanDevice;
-        //VkDebugUtilsMessengerEXT debugMessenger;
+        
         
 
         void initWindow();
@@ -44,14 +43,8 @@ class VulkanContext {
         void mainLoop();
         void createInstance();
         void setupDevice();
-        bool checkValidationLayerSupport(); 
         void createSurface();
         std::vector<const char*> getRequiredExtenstions();
-        //void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-        //void setupDebugMessenger();
-        //VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
-        //void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
-
 };
 
 
