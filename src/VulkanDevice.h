@@ -24,13 +24,16 @@ class VulkanDevice {
         VulkanDevice(VkInstance instance, VkSurfaceKHR surface);
         ~VulkanDevice();
         
-        
         void pickPhysicalDevice();
         void createLogicalDevice();
         void cleanupDevice();
-        // VkDevice getDevice() const { return device; }
+        
+        static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
 
-
+        VkDevice getDevice() const { return device; }
+        VkPhysicalDevice getPhysicalDevice() const { return physicalDevice; };
+        QueueFamilyIndices getIndices();
+        
 
     private:
         VkInstance instance;
@@ -39,10 +42,9 @@ class VulkanDevice {
         VkDevice device;
         VkQueue graphicsQueue;
         VkQueue presentQueue;
+        QueueFamilyIndices m_indices;
 
-
-        bool isDeviceSuitable(VkPhysicalDevice device);
-        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-        bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+        bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
+        bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
 
 };

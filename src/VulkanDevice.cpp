@@ -9,7 +9,6 @@ bool QueueFamilyIndices::isComplete() {
 
 VulkanDevice::VulkanDevice(VkInstance instance, VkSurfaceKHR surface) 
     : instance(instance), surface(surface) {
-
 }
 
 VulkanDevice::~VulkanDevice() {
@@ -44,20 +43,20 @@ void VulkanDevice::pickPhysicalDevice() {
 
 }
 
-bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device) {
-    QueueFamilyIndices indices = findQueueFamilies(device);
+bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice physicaldevice) {
+    QueueFamilyIndices indices = findQueueFamilies(physicaldevice, surface);
 
-    bool extensionsSupported = checkDeviceExtensionSupport(device);
+    bool extensionsSupported = checkDeviceExtensionSupport(physicaldevice);
 
     return indices.isComplete() && extensionsSupported;
 }
 
-bool VulkanDevice::checkDeviceExtensionSupport(VkPhysicalDevice device) {
+bool VulkanDevice::checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice) {
     
     uint32_t extensionCount;
-    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+    vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr);
     std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+    vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableExtensions.data());
 
     std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
@@ -69,20 +68,17 @@ bool VulkanDevice::checkDeviceExtensionSupport(VkPhysicalDevice device) {
     return requiredExtensions.empty();
 }
 
-
-QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device) {
+QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
     QueueFamilyIndices indices;
     uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
 
     std::cout << physicalDevice << std::endl;
-    std::cout << device << std::endl;
-
     std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
 
     //the VkQueueFamilyProperties struct contains some details about the queue family bla bla bla bla
     //(including the type of operations and the number of queues that can be created on that particular family)
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
 
     int i = 0;
     for (const auto& queueFamily : queueFamilies) { 
@@ -91,7 +87,7 @@ QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device) {
             indices.graphicsFamily = i;
         
         VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+        vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
         
         if (presentSupport) {
 			indices.presentFamily = i;
@@ -109,11 +105,11 @@ QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device) {
 
 
 void VulkanDevice::createLogicalDevice() {
-    QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+    m_indices = findQueueFamilies(physicalDevice, surface);
     float queuePriority = 1.0f;
 
     //for most dedicated hardware devices these queues end up being the same anyway
-    std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };  
+    std::set<uint32_t> uniqueQueueFamilies = { m_indices.graphicsFamily.value(), m_indices.presentFamily.value() };  
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	for (uint32_t queueFamily : uniqueQueueFamilies) {
 		VkDeviceQueueCreateInfo queueCreateInfo{};
@@ -123,6 +119,7 @@ void VulkanDevice::createLogicalDevice() {
 		queueCreateInfo.queueCount = 1;
 		queueCreateInfo.pQueuePriorities = &queuePriority;
     	queueCreateInfos.push_back(queueCreateInfo);
+        
 	}
 
 
@@ -141,10 +138,15 @@ void VulkanDevice::createLogicalDevice() {
 	}
 
     //so if they are the same queue these two will have the same value as well.
-    vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
-    vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
+    vkGetDeviceQueue(device, m_indices.graphicsFamily.value(), 0, &graphicsQueue);
+    vkGetDeviceQueue(device, m_indices.presentFamily.value(), 0, &presentQueue);
 
 
+}
+
+
+QueueFamilyIndices VulkanDevice::getIndices() {
+    return m_indices;
 }
 
 void VulkanDevice::cleanupDevice() {

@@ -17,7 +17,7 @@ void VulkanContext::initWindow() {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+    _window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
 }
 
 void VulkanContext::initVulkan() {
@@ -25,11 +25,12 @@ void VulkanContext::initVulkan() {
     setupDebugMessenger(instance);
     createSurface();
     setupDevice();
+    setupSwapChain();
     
 }
 
 void VulkanContext::mainLoop() {
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(_window)) {
         glfwPollEvents();
     }
 }
@@ -42,9 +43,9 @@ void VulkanContext::cleanup() {
         ::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
     }
     
-    vkDestroySurfaceKHR(instance, surface,nullptr);
+    vkDestroySurfaceKHR(instance, _surface, nullptr);
     vkDestroyInstance(instance, nullptr);
-    glfwDestroyWindow(window);
+    glfwDestroyWindow(_window);
     glfwTerminate();
 
 }
@@ -94,7 +95,7 @@ void VulkanContext::createInstance() {
 }
 
 void VulkanContext::createSurface() {
-    if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
+    if (glfwCreateWindowSurface(instance, _window, nullptr, &_surface) != VK_SUCCESS) {
         throw std::runtime_error("failed to create window surface!");
     }
 }
@@ -103,9 +104,21 @@ void VulkanContext::createSurface() {
 
 
 void VulkanContext::setupDevice() {
-    m_VulkanDevice = new VulkanDevice(instance, surface);
+    m_VulkanDevice = new VulkanDevice(instance, _surface);
     m_VulkanDevice->pickPhysicalDevice();
     m_VulkanDevice->createLogicalDevice();
+}
+
+
+void VulkanContext::setupSwapChain() {
+    VkPhysicalDevice physicalDevice = m_VulkanDevice->getPhysicalDevice();
+    VkDevice device = m_VulkanDevice->getDevice();
+    QueueFamilyIndices q_indices = m_VulkanDevice->getIndices();
+
+    m_SwapChain = new VulkanSwapChain(_surface, device, physicalDevice, _window, q_indices);
+    m_SwapChain->createSwapChain();
+    
+
 }
 
 std::vector<const char*> VulkanContext::getRequiredExtenstions() {

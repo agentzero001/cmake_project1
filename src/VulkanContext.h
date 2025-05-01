@@ -18,22 +18,22 @@
 #include <fstream>
 #include "VulkanDevice.h"
 #include "VulkanDebug.h"
+#include "VulkanSwapchain.h"
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
 
 class VulkanContext {
-    public:
-
-        
+    public:      
         void run();        
 
     private: 
-        GLFWwindow* window;
-        VkSurfaceKHR surface;
+        GLFWwindow* _window;
+        VkSurfaceKHR _surface;
         VkInstance instance;
         VulkanDevice* m_VulkanDevice;
+        VulkanSwapChain* m_SwapChain;
         
         
 
@@ -44,6 +44,7 @@ class VulkanContext {
         void createInstance();
         void setupDevice();
         void createSurface();
+        void setupSwapChain();
         std::vector<const char*> getRequiredExtenstions();
 };
 
