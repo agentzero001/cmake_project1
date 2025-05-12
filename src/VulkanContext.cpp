@@ -26,6 +26,7 @@ void VulkanContext::initVulkan() {
     createSurface();
     setupDevice();
     setupSwapChain();
+    setupPipeline();
     
 }
 
@@ -36,7 +37,8 @@ void VulkanContext::mainLoop() {
 }
 
 void VulkanContext::cleanup() {
- 
+    m_Pipeline->cleanupPipeline();
+    m_SwapChain->cleanupSwapChain();
     m_VulkanDevice->cleanupDevice();
 
     if (enableValidationLayers) {
@@ -107,18 +109,31 @@ void VulkanContext::setupDevice() {
     m_VulkanDevice = new VulkanDevice(instance, _surface);
     m_VulkanDevice->pickPhysicalDevice();
     m_VulkanDevice->createLogicalDevice();
+
+    physicalDevice = m_VulkanDevice->getPhysicalDevice();
+    device = m_VulkanDevice->getDevice();
+    
 }
 
 
 void VulkanContext::setupSwapChain() {
-    VkPhysicalDevice physicalDevice = m_VulkanDevice->getPhysicalDevice();
-    VkDevice device = m_VulkanDevice->getDevice();
     QueueFamilyIndices q_indices = m_VulkanDevice->getIndices();
 
     m_SwapChain = new VulkanSwapChain(_surface, device, physicalDevice, _window, q_indices);
     m_SwapChain->createSwapChain();
-    
+    m_SwapChain->createImageViews();  
 
+    swapChainImageFormat = m_SwapChain->getSwapChainImageFormat();
+
+}
+
+
+void VulkanContext::setupPipeline() {
+    m_Pipeline = new VulkanPipeline(device, swapChainImageFormat);
+    m_Pipeline->createRenderPass();
+    m_Pipeline->createGraphicsPipeline();
+    m_SwapChain->createFramebuffers(m_Pipeline->getRenderPass());
+    
 }
 
 std::vector<const char*> VulkanContext::getRequiredExtenstions() {

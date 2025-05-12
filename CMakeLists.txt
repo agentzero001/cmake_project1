@@ -34,6 +34,8 @@ add_executable(cmake_project1
                 src/VulkanDebug.cpp
                 src/VulkanSwapchain.h
                 src/VulkanSwapchain.cpp
+                src/VulkanPipeline.cpp
+                src/VulkanPipeline.h
                 )
 
 target_link_libraries(cmake_project1 glfw3 vulkan-1)

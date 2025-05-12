@@ -28,5 +28,11 @@
   "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1442~1.344\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -IC:\\VulkanSDK\\1.3.290.0\\Include -I\"C:\\Users\\jensm\\Desktop\\local\\visual studio\\glfw-3.4.bin.WIN64\\include\" -IC:\\Users\\jensm\\Desktop\\local\\glm-1.0.1 /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\cmake_project1.dir\\src\\VulkanSwapchain.cpp.obj /FdCMakeFiles\\cmake_project1.dir\\ /FS -c C:\\Users\\jensm\\Desktop\\cmake_project1\\src\\VulkanSwapchain.cpp",
   "file": "C:\\Users\\jensm\\Desktop\\cmake_project1\\src\\VulkanSwapchain.cpp",
   "output": "CMakeFiles\\cmake_project1.dir\\src\\VulkanSwapchain.cpp.obj"
+},
+{
+  "directory": "C:/Users/jensm/Desktop/cmake_project1/build",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1442~1.344\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -IC:\\VulkanSDK\\1.3.290.0\\Include -I\"C:\\Users\\jensm\\Desktop\\local\\visual studio\\glfw-3.4.bin.WIN64\\include\" -IC:\\Users\\jensm\\Desktop\\local\\glm-1.0.1 /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\cmake_project1.dir\\src\\VulkanPipeline.cpp.obj /FdCMakeFiles\\cmake_project1.dir\\ /FS -c C:\\Users\\jensm\\Desktop\\cmake_project1\\src\\VulkanPipeline.cpp",
+  "file": "C:\\Users\\jensm\\Desktop\\cmake_project1\\src\\VulkanPipeline.cpp",
+  "output": "CMakeFiles\\cmake_project1.dir\\src\\VulkanPipeline.cpp.obj"
 }
 ]

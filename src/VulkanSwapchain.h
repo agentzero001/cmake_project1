@@ -17,26 +17,36 @@ struct SwapChainSupportDetails {
 
 class VulkanSwapChain {
     public:
-    VulkanSwapChain(VkSurfaceKHR surface, VkDevice device, VkPhysicalDevice physicalDevice, GLFWwindow* _window, QueueFamilyIndices indices);
-    void createSwapChain();
-    VkSwapchainKHR swapChain;
+        VulkanSwapChain(VkSurfaceKHR surface, VkDevice device, VkPhysicalDevice physicalDevice, GLFWwindow* _window, QueueFamilyIndices indices);
+        void createSwapChain();
+        void createImageViews();
+        void createFramebuffers(VkRenderPass renderPass);
+        void cleanupSwapChain();
+
+        VkSwapchainKHR swapChain;
+
+        VkFormat getSwapChainImageFormat() const { return swapChainImageFormat; }
     
 
     private: 
-    VkSurfaceKHR surface; 
-    VkDevice device; 
-    VkPhysicalDevice physicalDevice;
-    GLFWwindow* _window;
-    std::vector<VkImage> swapChainImages;
-    VkFormat swapChainImageFormat;
-    VkExtent2D swapChainExtent;
-    QueueFamilyIndices indices;
-    
+        VkSurfaceKHR surface; 
+        VkDevice device; 
+        VkPhysicalDevice physicalDevice;
+        GLFWwindow* _window;
+        std::vector<VkImage> swapChainImages;
+        std::vector<VkImageView> swapChainImageViews;
+
+        VkFormat swapChainImageFormat;
+        VkExtent2D swapChainExtent;
+        QueueFamilyIndices indices;
+        std::vector<VkFramebuffer> swapChainFramebuffers;
+        
 
 
-    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR& surface);    
-    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
+        SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR& surface);    
+        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
+        VkImageView VulkanSwapChain::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkDevice device);
 
-};
+}; 
