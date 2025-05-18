@@ -26,13 +26,17 @@ class VulkanDevice {
         
         void pickPhysicalDevice();
         void createLogicalDevice();
+        void createCommandPool();
+        void createCommandBuffer();
+        void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void cleanupDevice();
         
         static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
 
         VkDevice getDevice() const { return device; }
         VkPhysicalDevice getPhysicalDevice() const { return physicalDevice; };
-        QueueFamilyIndices getIndices();
+        QueueFamilyIndices getIndices() const { return m_indices; };
+        VkCommandBuffer getCommandBuffer() const { return commandBuffer; };
         
 
     private:
@@ -43,6 +47,8 @@ class VulkanDevice {
         VkQueue graphicsQueue;
         VkQueue presentQueue;
         QueueFamilyIndices m_indices;
+        VkCommandPool commandPool;
+        VkCommandBuffer commandBuffer;
 
         bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
         bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);

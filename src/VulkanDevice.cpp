@@ -40,6 +40,8 @@ void VulkanDevice::pickPhysicalDevice() {
 
     std::cout << deviceProperties.deviceName << std::endl;
 
+    m_indices = findQueueFamilies(physicalDevice, surface);
+
 
 }
 
@@ -105,7 +107,7 @@ QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice physicalDevi
 
 
 void VulkanDevice::createLogicalDevice() {
-    m_indices = findQueueFamilies(physicalDevice, surface);
+    
     float queuePriority = 1.0f;
 
     //for most dedicated hardware devices these queues end up being the same anyway
@@ -144,11 +146,45 @@ void VulkanDevice::createLogicalDevice() {
 
 }
 
+void VulkanDevice::createCommandPool() {
 
-QueueFamilyIndices VulkanDevice::getIndices() {
-    return m_indices;
+	VkCommandPoolCreateInfo poolInfo{};
+	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+	poolInfo.queueFamilyIndex = m_indices.graphicsFamily.value();
+
+	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create command pool!");
+	}
 }
 
+
+void VulkanDevice::createCommandBuffer() {
+    VkCommandBufferAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	allocInfo.commandPool = commandPool;
+	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	allocInfo.commandBufferCount = 1;
+	if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create command buffers");
+	}
+
+}
+
+// void VulkanDevice::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+//     VkCommandBufferBeginInfo beginInfo{};
+//     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+//     //beginInfo.flags = 0;
+//     //beginInfo.pInheritanceInfo = nullptr;
+//   	if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+// 		throw std::runtime_error("failed to begin recording command buffer!");
+// 	}
+//}
+
+
+
+
 void VulkanDevice::cleanupDevice() {
+    vkDestroyCommandPool(device, commandPool, nullptr);
     vkDestroyDevice(device, nullptr);
 }

@@ -20,6 +20,7 @@
 #include "VulkanDebug.h"
 #include "VulkanSwapchain.h"
 #include "VulkanPipeline.h"
+#include "VulkanRenderer.h"
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -36,9 +37,9 @@ class VulkanContext {
         VulkanDevice* m_VulkanDevice;
         VulkanSwapChain* m_SwapChain;
         VulkanPipeline* m_Pipeline;
+        VulkanRenderer* m_Renderer;
         VkDevice device;
         VkPhysicalDevice physicalDevice;
-
         VkFormat swapChainImageFormat;
         
         
@@ -52,6 +53,7 @@ class VulkanContext {
         void createSurface();
         void setupSwapChain();
         void setupPipeline();
+        void setupCommandBuffers();
         std::vector<const char*> getRequiredExtenstions();
 };
 

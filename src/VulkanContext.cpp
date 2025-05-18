@@ -27,16 +27,20 @@ void VulkanContext::initVulkan() {
     setupDevice();
     setupSwapChain();
     setupPipeline();
+    setupCommandBuffers();
+    m_Renderer->createSyncObjects();
     
 }
 
 void VulkanContext::mainLoop() {
     while (!glfwWindowShouldClose(_window)) {
         glfwPollEvents();
+        //m_Renderer->drawFrame();
     }
 }
 
 void VulkanContext::cleanup() {
+    m_Renderer->cleanup();
     m_Pipeline->cleanupPipeline();
     m_SwapChain->cleanupSwapChain();
     m_VulkanDevice->cleanupDevice();
@@ -118,6 +122,7 @@ void VulkanContext::setupDevice() {
 
 void VulkanContext::setupSwapChain() {
     QueueFamilyIndices q_indices = m_VulkanDevice->getIndices();
+    std::cout << q_indices.graphicsFamily.value() << std::endl;
 
     m_SwapChain = new VulkanSwapChain(_surface, device, physicalDevice, _window, q_indices);
     m_SwapChain->createSwapChain();
@@ -136,6 +141,22 @@ void VulkanContext::setupPipeline() {
     
 }
 
+
+
+
+void VulkanContext::setupCommandBuffers() {
+    m_VulkanDevice->createCommandPool();    
+    m_VulkanDevice->createCommandBuffer();
+
+    m_Renderer = new VulkanRenderer(m_VulkanDevice->getCommandBuffer(),
+        	                        m_SwapChain->getSwapChainExtent(),
+                                    m_Pipeline->getRenderPass(),
+                                    m_SwapChain->getSwapChainFrameBuffers(),
+                                    m_Pipeline->getPipeline(), 
+                                    device);
+}
+
+ 
 std::vector<const char*> VulkanContext::getRequiredExtenstions() {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;

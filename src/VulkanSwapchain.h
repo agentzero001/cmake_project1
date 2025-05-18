@@ -24,9 +24,9 @@ class VulkanSwapChain {
         void cleanupSwapChain();
 
         VkSwapchainKHR swapChain;
-
         VkFormat getSwapChainImageFormat() const { return swapChainImageFormat; }
-    
+        const std::vector<VkFramebuffer>& getSwapChainFrameBuffers() const { return swapChainFramebuffers; }
+        VkExtent2D getSwapChainExtent() const { return swapChainExtent; };
 
     private: 
         VkSurfaceKHR surface; 

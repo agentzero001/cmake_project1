@@ -36,6 +36,7 @@ class VulkanPipeline {
         void createGraphicsPipeline();
 		void cleanupPipeline();
 		void createRenderPass();
+		VkPipeline getPipeline() const { return graphicsPipeline; };
 		VkRenderPass getRenderPass() const { return renderPass; };
 
 	private:

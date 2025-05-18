@@ -179,12 +179,8 @@ VkImageView VulkanSwapChain::createImageView(VkImage image, VkFormat format, VkI
 
 void VulkanSwapChain::createFramebuffers(VkRenderPass renderPass) {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
-
-
-		swapChainFramebuffers.resize(swapChainImageViews.size());
-		for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-
-
+	
+	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
 		VkImageView attachments[] = {
 			swapChainImageViews[i]
 		};
