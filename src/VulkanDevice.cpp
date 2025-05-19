@@ -139,11 +139,11 @@ void VulkanDevice::createLogicalDevice() {
 		throw std::runtime_error("failed to create logical device");
 	}
 
+    
     //so if they are the same queue these two will have the same value as well.
     vkGetDeviceQueue(device, m_indices.graphicsFamily.value(), 0, &graphicsQueue);
     vkGetDeviceQueue(device, m_indices.presentFamily.value(), 0, &presentQueue);
-
-
+    
 }
 
 void VulkanDevice::createCommandPool() {

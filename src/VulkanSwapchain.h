@@ -23,12 +23,14 @@ class VulkanSwapChain {
         void createFramebuffers(VkRenderPass renderPass);
         void cleanupSwapChain();
 
-        VkSwapchainKHR swapChain;
+        
+        VkSwapchainKHR getswapChain() const { return swapChain; };
         VkFormat getSwapChainImageFormat() const { return swapChainImageFormat; }
         const std::vector<VkFramebuffer>& getSwapChainFrameBuffers() const { return swapChainFramebuffers; }
         VkExtent2D getSwapChainExtent() const { return swapChainExtent; };
 
     private: 
+        VkSwapchainKHR swapChain;
         VkSurfaceKHR surface; 
         VkDevice device; 
         VkPhysicalDevice physicalDevice;

@@ -152,7 +152,9 @@ void VulkanContext::setupCommandBuffers() {
         	                        m_SwapChain->getSwapChainExtent(),
                                     m_Pipeline->getRenderPass(),
                                     m_SwapChain->getSwapChainFrameBuffers(),
-                                    m_Pipeline->getPipeline(), 
+                                    m_Pipeline->getPipeline(),
+                                    m_SwapChain->getswapChain(),
+                                    m_VulkanDevice->getGraphicsQueue(), 
                                     device);
 }
 

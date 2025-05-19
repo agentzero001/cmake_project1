@@ -10,6 +10,8 @@ class VulkanRenderer {
             VkRenderPass renderPass,
             std::vector<VkFramebuffer> swapChainFramebuffers,
             VkPipeline graphicsPipeline,
+            VkSwapchainKHR swapChain,
+            VkQueue graphicsQueue,
             VkDevice device
         ); 
 
@@ -24,6 +26,8 @@ class VulkanRenderer {
         VkRenderPass renderPass;
         std::vector<VkFramebuffer> swapChainFramebuffers;
         VkPipeline graphicsPipeline;
+        VkSwapchainKHR swapChain;
+        VkQueue graphicsQueue;
         VkDevice device;
 
         VkSemaphore imageAvailableSemaphore;
