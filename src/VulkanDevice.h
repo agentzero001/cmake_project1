@@ -38,7 +38,7 @@ class VulkanDevice {
         QueueFamilyIndices getIndices() const { return m_indices; };
         VkCommandBuffer getCommandBuffer() const { return commandBuffer; };
         VkQueue getGraphicsQueue() const { return graphicsQueue; };
-        
+        VkQueue getPresentQueue() const { return presentQueue; };        
 
     private:
         VkInstance instance;

@@ -11,8 +11,6 @@ void VulkanContext::run() {
     cleanup();
 }
 
-
-
 void VulkanContext::initWindow() {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -35,8 +33,9 @@ void VulkanContext::initVulkan() {
 void VulkanContext::mainLoop() {
     while (!glfwWindowShouldClose(_window)) {
         glfwPollEvents();
-        //m_Renderer->drawFrame();
+        m_Renderer->drawFrame();
     }
+    vkDeviceWaitIdle(device);
 }
 
 void VulkanContext::cleanup() {
@@ -154,7 +153,8 @@ void VulkanContext::setupCommandBuffers() {
                                     m_SwapChain->getSwapChainFrameBuffers(),
                                     m_Pipeline->getPipeline(),
                                     m_SwapChain->getswapChain(),
-                                    m_VulkanDevice->getGraphicsQueue(), 
+                                    m_VulkanDevice->getGraphicsQueue(),
+                                    m_VulkanDevice->getPresentQueue(), 
                                     device);
 }
 

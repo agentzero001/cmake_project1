@@ -12,6 +12,7 @@ class VulkanRenderer {
             VkPipeline graphicsPipeline,
             VkSwapchainKHR swapChain,
             VkQueue graphicsQueue,
+            VkQueue presentQueue,
             VkDevice device
         ); 
 
@@ -28,13 +29,10 @@ class VulkanRenderer {
         VkPipeline graphicsPipeline;
         VkSwapchainKHR swapChain;
         VkQueue graphicsQueue;
+        VkQueue presentQueue;
         VkDevice device;
 
         VkSemaphore imageAvailableSemaphore;
         VkSemaphore renderFinishedSemaphore;
-        VkFence inFlightFence;
-        // Swapchain* swapchain;
-        // GraphicsPipeline* pipeline;
-        // VulkanDevice* device;
-   
+        VkFence inFlightFence;    
 };

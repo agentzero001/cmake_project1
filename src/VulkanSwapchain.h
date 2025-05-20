@@ -26,7 +26,7 @@ class VulkanSwapChain {
         
         VkSwapchainKHR getswapChain() const { return swapChain; };
         VkFormat getSwapChainImageFormat() const { return swapChainImageFormat; }
-        const std::vector<VkFramebuffer>& getSwapChainFrameBuffers() const { return swapChainFramebuffers; }
+        const std::vector<VkFramebuffer> getSwapChainFrameBuffers() const { return swapChainFramebuffers; }
         VkExtent2D getSwapChainExtent() const { return swapChainExtent; };
 
     private: 
