@@ -2,10 +2,11 @@
 #include <vector>
 #include <iostream>
 
+
 class VulkanRenderer {
     public:
         VulkanRenderer(
-            VkCommandBuffer commandBuffer,
+            std::vector<VkCommandBuffer> commandBuffers,
             VkExtent2D swapChainExtent,
             VkRenderPass renderPass,
             std::vector<VkFramebuffer> swapChainFramebuffers,
@@ -13,7 +14,8 @@ class VulkanRenderer {
             VkSwapchainKHR swapChain,
             VkQueue graphicsQueue,
             VkQueue presentQueue,
-            VkDevice device
+            VkDevice device,
+            int framesInFlight
         ); 
 
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
@@ -23,7 +25,7 @@ class VulkanRenderer {
 
     private:
         VkExtent2D swapChainExtent;
-        VkCommandBuffer commandBuffer;
+        std::vector<VkCommandBuffer> commandBuffers;
         VkRenderPass renderPass;
         std::vector<VkFramebuffer> swapChainFramebuffers;
         VkPipeline graphicsPipeline;
@@ -31,8 +33,11 @@ class VulkanRenderer {
         VkQueue graphicsQueue;
         VkQueue presentQueue;
         VkDevice device;
+        int framesInFlight;
 
-        VkSemaphore imageAvailableSemaphore;
-        VkSemaphore renderFinishedSemaphore;
-        VkFence inFlightFence;    
+        std::vector<VkSemaphore> imageAvailableSemaphores;
+        std::vector<VkSemaphore> renderFinishedSemaphores;
+        std::vector<VkFence> inFlightFences;  
+        
+        uint32_t currentFrame = 0;
 };

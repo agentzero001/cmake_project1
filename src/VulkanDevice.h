@@ -27,7 +27,7 @@ class VulkanDevice {
         void pickPhysicalDevice();
         void createLogicalDevice();
         void createCommandPool();
-        void createCommandBuffer();
+        void createCommandBuffers(int size);
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void cleanupDevice();
         
@@ -36,7 +36,7 @@ class VulkanDevice {
         VkDevice getDevice() const { return device; }
         VkPhysicalDevice getPhysicalDevice() const { return physicalDevice; };
         QueueFamilyIndices getIndices() const { return m_indices; };
-        VkCommandBuffer getCommandBuffer() const { return commandBuffer; };
+        std::vector<VkCommandBuffer> getCommandBuffers() const { return commandBuffers; };
         VkQueue getGraphicsQueue() const { return graphicsQueue; };
         VkQueue getPresentQueue() const { return presentQueue; };        
 
@@ -49,7 +49,7 @@ class VulkanDevice {
         VkQueue presentQueue;
         QueueFamilyIndices m_indices;
         VkCommandPool commandPool;
-        VkCommandBuffer commandBuffer;
+        std::vector<VkCommandBuffer> commandBuffers;
 
         bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
         bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);

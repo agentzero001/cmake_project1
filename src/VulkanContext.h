@@ -25,6 +25,8 @@
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
+const int MAX_FRAMES_IN_FLIGHT = 2;
+
 
 class VulkanContext {
     public:      
@@ -54,6 +56,7 @@ class VulkanContext {
         void setupSwapChain();
         void setupPipeline();
         void setupCommandBuffers();
+        void setupRenderer();
         std::vector<const char*> getRequiredExtenstions();
 };
 

@@ -210,9 +210,6 @@ void VulkanSwapChain::cleanupSwapChain() {
 		vkDestroyImageView(device, swapChainImageView, nullptr);
 	}
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
-	
-	
-
 }
 
 
