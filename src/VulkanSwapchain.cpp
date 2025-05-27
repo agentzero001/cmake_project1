@@ -6,8 +6,13 @@ VulkanSwapChain::VulkanSwapChain(
 	VkPhysicalDevice physicalDevice,
 	GLFWwindow* _window,
 	QueueFamilyIndices indices
-) 
-: surface(surface), device(device), physicalDevice(physicalDevice) , _window(_window), indices(indices) {}
+) :
+	surface(surface),
+	device(device),
+	physicalDevice(physicalDevice),
+	_window(_window),
+	indices(indices)	 
+	{}	
 
 
 SwapChainSupportDetails VulkanSwapChain::querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR& surface) {
@@ -141,6 +146,28 @@ void VulkanSwapChain::createSwapChain() {
 
 }
 
+void VulkanSwapChain::recreateSwapChain(VkRenderPass renderPass) {
+
+	int width = 0, height = 0;
+	glfwGetFramebufferSize(_window, &width, &height);
+
+	while (width == 0 || height == 0) {
+		glfwGetFramebufferSize(_window, &width, &height);
+		glfwWaitEvents();
+	}
+
+	vkDeviceWaitIdle(device); //do not touch resources that may still be in use
+
+	cleanupSwapChain();
+
+
+	createSwapChain();
+	createImageViews();
+	//createDepthResources();
+	createFramebuffers(renderPass);
+}
+
+
 
 void VulkanSwapChain::createImageViews() {
 	swapChainImageViews.resize(swapChainImages.size());
@@ -178,6 +205,8 @@ VkImageView VulkanSwapChain::createImageView(VkImage image, VkFormat format, VkI
 
 
 void VulkanSwapChain::createFramebuffers(VkRenderPass renderPass) {
+
+	//i dont even know if thats possible whatever
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 	
 	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
@@ -211,5 +240,3 @@ void VulkanSwapChain::cleanupSwapChain() {
 	}
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
 }
-
-

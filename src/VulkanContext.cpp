@@ -1,7 +1,7 @@
 #include "VulkanContext.h"
+#include "VulkanRenderer.h"
 
 using namespace VulkanDebug;
-
 
 
 void VulkanContext::run() {
@@ -14,11 +14,13 @@ void VulkanContext::run() {
 void VulkanContext::initWindow() {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
     // GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     // const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
     _window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+    glfwSetWindowUserPointer(_window, this);
+    glfwSetFramebufferSizeCallback(_window, framebufferResizeCallback);
 }
 
 void VulkanContext::initVulkan() {
@@ -153,7 +155,8 @@ void VulkanContext::setupCommandBuffers() {
 }
 
 void VulkanContext::setupRenderer() {
-    m_Renderer = new VulkanRenderer(m_VulkanDevice->getCommandBuffers(),
+    m_Renderer = new VulkanRenderer(this,
+                                    m_VulkanDevice->getCommandBuffers(),
                                     m_SwapChain->getSwapChainExtent(),
                                     m_Pipeline->getRenderPass(),
                                     m_SwapChain->getSwapChainFrameBuffers(),
@@ -181,4 +184,10 @@ std::vector<const char*> VulkanContext::getRequiredExtenstions() {
     }
 
     return extensions;
+}
+
+
+void VulkanContext::recreateSwapChain() {
+    m_SwapChain->recreateSwapChain(m_Pipeline->getRenderPass());
+    m_Renderer->updateSwapChainResources(m_SwapChain->getswapChain(), m_SwapChain->getSwapChainFrameBuffers(), m_SwapChain->getSwapChainExtent());
 }

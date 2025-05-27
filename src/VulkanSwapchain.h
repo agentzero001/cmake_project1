@@ -17,8 +17,15 @@ struct SwapChainSupportDetails {
 
 class VulkanSwapChain {
     public:
-        VulkanSwapChain(VkSurfaceKHR surface, VkDevice device, VkPhysicalDevice physicalDevice, GLFWwindow* _window, QueueFamilyIndices indices);
+        VulkanSwapChain(VkSurfaceKHR surface,
+                        VkDevice device,
+                        VkPhysicalDevice physicalDevice,
+                        GLFWwindow* _window,
+                        QueueFamilyIndices indices
+        );
+
         void createSwapChain();
+        void recreateSwapChain(VkRenderPass renderPass);
         void createImageViews();
         void createFramebuffers(VkRenderPass renderPass);
         void cleanupSwapChain();

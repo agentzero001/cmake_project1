@@ -2,10 +2,13 @@
 #include <vector>
 #include <iostream>
 
+class VulkanContext;  // Forward declaration — no include needed
+
 
 class VulkanRenderer {
     public:
         VulkanRenderer(
+            VulkanContext* context,
             std::vector<VkCommandBuffer> commandBuffers,
             VkExtent2D swapChainExtent,
             VkRenderPass renderPass,
@@ -21,9 +24,17 @@ class VulkanRenderer {
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void createSyncObjects();
         void drawFrame();
+        void updateSwapChainResources(
+            VkSwapchainKHR swapChain,
+            std::vector<VkFramebuffer> newSwapChainFramebuffers,
+            VkExtent2D newSwapChainExtent
+        );
+        
         void cleanup();
 
     private:
+        VulkanContext* m_context;
+
         VkExtent2D swapChainExtent;
         std::vector<VkCommandBuffer> commandBuffers;
         VkRenderPass renderPass;
@@ -40,4 +51,7 @@ class VulkanRenderer {
         std::vector<VkFence> inFlightFences;  
         
         uint32_t currentFrame = 0;
+
+        
+        
 };

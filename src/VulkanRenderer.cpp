@@ -1,7 +1,9 @@
+#include "VulkanContext.h"	
 #include "VulkanRenderer.h"
 
 
 VulkanRenderer::VulkanRenderer(
+	VulkanContext* context,
 	std::vector<VkCommandBuffer> commandBuffers,
 	VkExtent2D swapChainExtent,
 	VkRenderPass renderPass,
@@ -22,7 +24,8 @@ VulkanRenderer::VulkanRenderer(
 	graphicsQueue(graphicsQueue),
 	presentQueue(presentQueue),
 	device(device), 
-	framesInFlight(framesInFlight)	 
+	framesInFlight(framesInFlight),
+	m_context(context)
 	{}
 
 
@@ -79,12 +82,21 @@ void VulkanRenderer::drawFrame() {
 	//the vkWaitForFences function takes an array of fences and waits on the host for either any or all of the fences to be signaled before returning.
 	//the function also has a timeout parameter.
     vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-	vkResetFences(device, 1, &inFlightFences[currentFrame]);
-
+	
 	uint32_t imageIndex;
-	vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+	VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
+	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+		m_context->m_SwapChain->recreateSwapChain(renderPass);
+		return;
+	}
+	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+		throw std::runtime_error("failed to acquire swap chain image!");
+	}
+
+	vkResetFences(device, 1, &inFlightFences[currentFrame]);
 	vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+	
 	recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 
 	VkSubmitInfo submitInfo{};
@@ -119,7 +131,17 @@ void VulkanRenderer::drawFrame() {
 
 	presentInfo.pImageIndices = &imageIndex;
 
-	vkQueuePresentKHR(presentQueue, &presentInfo);
+	result = vkQueuePresentKHR(presentQueue, &presentInfo);
+
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+		m_context->framebufferResized = false;
+		m_context->recreateSwapChain();
+//		m_context->m_SwapChain->recreateSwapChain(renderPass);
+	}
+	else if (result != VK_SUCCESS) {
+		throw std::runtime_error("failed to present swap chain image!");
+	}
+
 
 	currentFrame = ( currentFrame + 1 ) % framesInFlight; 
 
@@ -149,6 +171,17 @@ void VulkanRenderer::createSyncObjects() {
 			throw std::runtime_error("failed to create semaphores!");
 		}
 	}
+
+}
+
+void VulkanRenderer::updateSwapChainResources(
+		VkSwapchainKHR newSwapChain,
+		std::vector<VkFramebuffer> newSwapChainFramebuffers,
+		VkExtent2D newSwapChainExtent
+	) {
+	swapChain = newSwapChain;
+	swapChainFramebuffers = newSwapChainFramebuffers;
+	swapChainExtent = newSwapChainExtent;
 
 }
 

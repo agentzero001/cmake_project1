@@ -20,7 +20,7 @@
 #include "VulkanDebug.h"
 #include "VulkanSwapchain.h"
 #include "VulkanPipeline.h"
-#include "VulkanRenderer.h"
+
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
@@ -28,16 +28,22 @@ const uint32_t HEIGHT = 600;
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 
+
+class VulkanRenderer;
+
+
 class VulkanContext {
     public:      
-        void run();        
+        VulkanSwapChain* m_SwapChain;
+        bool framebufferResized = false;
+        void recreateSwapChain();
+        void run();       
 
     private: 
         GLFWwindow* _window;
         VkSurfaceKHR _surface;
         VkInstance instance;
         VulkanDevice* m_VulkanDevice;
-        VulkanSwapChain* m_SwapChain;
         VulkanPipeline* m_Pipeline;
         VulkanRenderer* m_Renderer;
         VkDevice device;
@@ -58,6 +64,13 @@ class VulkanContext {
         void setupCommandBuffers();
         void setupRenderer();
         std::vector<const char*> getRequiredExtenstions();
+        
+
+        static void framebufferResizeCallback(GLFWwindow* window, int witdth, int height) {
+            auto context = reinterpret_cast<VulkanContext*>(glfwGetWindowUserPointer(window));
+	        context->framebufferResized = true;
+        }
+
 };
 
 
