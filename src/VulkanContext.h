@@ -20,6 +20,7 @@
 #include "VulkanDebug.h"
 #include "VulkanSwapchain.h"
 #include "VulkanPipeline.h"
+#include "VulkanResource.h"
 
 
 const uint32_t WIDTH = 800;
@@ -36,7 +37,7 @@ class VulkanContext {
     public:      
         VulkanSwapChain* m_SwapChain;
         bool framebufferResized = false;
-        void recreateSwapChain();
+        void updateSwapChain();
         void run();       
 
     private: 
@@ -46,6 +47,7 @@ class VulkanContext {
         VulkanDevice* m_VulkanDevice;
         VulkanPipeline* m_Pipeline;
         VulkanRenderer* m_Renderer;
+        VulkanResource* m_Resource;
         VkDevice device;
         VkPhysicalDevice physicalDevice;
         VkFormat swapChainImageFormat;
@@ -62,6 +64,7 @@ class VulkanContext {
         void setupSwapChain();
         void setupPipeline();
         void setupCommandBuffers();
+        void setupResourceBuffers();
         void setupRenderer();
         std::vector<const char*> getRequiredExtenstions();
         

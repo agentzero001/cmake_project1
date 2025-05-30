@@ -29,9 +29,11 @@ void VulkanContext::initVulkan() {
     createSurface();
     setupDevice();
     setupSwapChain();
+    setupResourceBuffers();
     setupPipeline();
     setupCommandBuffers();
     setupRenderer();
+    
     
 }
 
@@ -45,6 +47,7 @@ void VulkanContext::mainLoop() {
 
 void VulkanContext::cleanup() {
     m_Renderer->cleanup();
+    m_Resource->cleanupResources();
     m_Pipeline->cleanupPipeline();
     m_SwapChain->cleanupSwapChain();
     m_VulkanDevice->cleanupDevice();
@@ -136,6 +139,11 @@ void VulkanContext::setupSwapChain() {
 
 }
 
+void VulkanContext::setupResourceBuffers() {
+    m_Resource = new VulkanResource(device, physicalDevice);
+    m_Resource->createVertexBuffer();
+
+}
 
 void VulkanContext::setupPipeline() {
     m_Pipeline = new VulkanPipeline(device, swapChainImageFormat);
@@ -154,18 +162,24 @@ void VulkanContext::setupCommandBuffers() {
 
 }
 
+
+
 void VulkanContext::setupRenderer() {
-    m_Renderer = new VulkanRenderer(this,
-                                    m_VulkanDevice->getCommandBuffers(),
-                                    m_SwapChain->getSwapChainExtent(),
-                                    m_Pipeline->getRenderPass(),
-                                    m_SwapChain->getSwapChainFrameBuffers(),
-                                    m_Pipeline->getPipeline(),
-                                    m_SwapChain->getswapChain(),
-                                    m_VulkanDevice->getGraphicsQueue(),
-                                    m_VulkanDevice->getPresentQueue(), 
-                                    device,
-                                    MAX_FRAMES_IN_FLIGHT);
+    m_Renderer = new VulkanRenderer(
+                            this,
+                            m_VulkanDevice->getCommandBuffers(),
+                            m_SwapChain->getSwapChainExtent(),
+                            m_Pipeline->getRenderPass(),
+                            m_SwapChain->getSwapChainFrameBuffers(),
+                            m_Pipeline->getPipeline(),
+                            m_SwapChain->getswapChain(),
+                            m_VulkanDevice->getGraphicsQueue(),
+                            m_VulkanDevice->getPresentQueue(),
+                            m_Resource->getVertexBuffer(), 
+                            vertices,
+                            device,
+                            MAX_FRAMES_IN_FLIGHT
+                    );
 
     m_Renderer->createSyncObjects();
 }
@@ -187,7 +201,7 @@ std::vector<const char*> VulkanContext::getRequiredExtenstions() {
 }
 
 
-void VulkanContext::recreateSwapChain() {
+void VulkanContext::updateSwapChain() {
     m_SwapChain->recreateSwapChain(m_Pipeline->getRenderPass());
     m_Renderer->updateSwapChainResources(m_SwapChain->getswapChain(), m_SwapChain->getSwapChainFrameBuffers(), m_SwapChain->getSwapChainExtent());
 }

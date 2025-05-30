@@ -1,6 +1,7 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <iostream>
+#include "VulkanResource.h"
 
 class VulkanContext;  // Forward declaration — no include needed
 
@@ -17,6 +18,8 @@ class VulkanRenderer {
             VkSwapchainKHR swapChain,
             VkQueue graphicsQueue,
             VkQueue presentQueue,
+            VkBuffer vertexBuffer,
+            std::vector<Vertex> vertices,
             VkDevice device,
             int framesInFlight
         ); 
@@ -29,7 +32,7 @@ class VulkanRenderer {
             std::vector<VkFramebuffer> newSwapChainFramebuffers,
             VkExtent2D newSwapChainExtent
         );
-        
+
         void cleanup();
 
     private:
@@ -43,7 +46,9 @@ class VulkanRenderer {
         VkSwapchainKHR swapChain;
         VkQueue graphicsQueue;
         VkQueue presentQueue;
+        VkBuffer vertexBuffer;
         VkDevice device;
+        std::vector<Vertex> vertices;
         int framesInFlight;
 
         std::vector<VkSemaphore> imageAvailableSemaphores;

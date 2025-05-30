@@ -12,6 +12,8 @@ VulkanRenderer::VulkanRenderer(
 	VkSwapchainKHR swapChain,
 	VkQueue graphicsQueue,
 	VkQueue presentQueue,
+	VkBuffer vertexBuffer,
+	std::vector<Vertex> vertices,
 	VkDevice device,
 	int framesInFlight
 ) :
@@ -23,7 +25,9 @@ VulkanRenderer::VulkanRenderer(
 	swapChain(swapChain),
 	graphicsQueue(graphicsQueue),
 	presentQueue(presentQueue),
-	device(device), 
+	vertexBuffer(vertexBuffer),
+	vertices(vertices),
+	device(device),
 	framesInFlight(framesInFlight),
 	m_context(context)
 	{}
@@ -67,7 +71,13 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	scissor.extent = swapChainExtent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-	vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+	VkBuffer vertexBuffers[] = { vertexBuffer };
+	VkDeviceSize offsets[] = { 0 };
+
+	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+
+	vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
 
@@ -135,7 +145,7 @@ void VulkanRenderer::drawFrame() {
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
 		m_context->framebufferResized = false;
-		m_context->recreateSwapChain();
+		m_context->updateSwapChain();
 //		m_context->m_SwapChain->recreateSwapChain(renderPass);
 	}
 	else if (result != VK_SUCCESS) {

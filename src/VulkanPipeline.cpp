@@ -1,5 +1,5 @@
 #include "VulkanPipeline.h"
-
+#include "VulkanResource.h"
 
 VulkanPipeline::VulkanPipeline(VkDevice device, VkFormat swapChainImageFormat) : device(device), swapChainImageFormat(swapChainImageFormat) {}
 
@@ -31,10 +31,16 @@ void VulkanPipeline::createGraphicsPipeline() {
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertexInputInfo.vertexBindingDescriptionCount = 0;
-	vertexInputInfo.vertexAttributeDescriptionCount = 0; 
-	vertexInputInfo.pVertexAttributeDescriptions = nullptr;
-	vertexInputInfo.pVertexBindingDescriptions = nullptr;
+
+   	auto bindingDescription = Vertex::getBindingDescription();
+	auto attributeDescriptions = Vertex::getAttributeDescriptions();
+
+
+ 	vertexInputInfo.vertexBindingDescriptionCount = 1;
+	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t> (attributeDescriptions.size());
+	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+
 
 
     VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
