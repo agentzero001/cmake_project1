@@ -29,9 +29,9 @@ void VulkanContext::initVulkan() {
     createSurface();
     setupDevice();
     setupSwapChain();
-    setupResourceBuffers();
     setupPipeline();
     setupCommandBuffers();
+    setupResourceBuffers();
     setupRenderer();
     
     
@@ -140,8 +140,9 @@ void VulkanContext::setupSwapChain() {
 }
 
 void VulkanContext::setupResourceBuffers() {
-    m_Resource = new VulkanResource(device, physicalDevice);
+    m_Resource = new VulkanResource(device, physicalDevice, m_VulkanDevice->getCommandPool(), m_VulkanDevice->getGraphicsQueue());
     m_Resource->createVertexBuffer();
+    m_Resource->createIndexBuffer();
 
 }
 
@@ -175,8 +176,10 @@ void VulkanContext::setupRenderer() {
                             m_SwapChain->getswapChain(),
                             m_VulkanDevice->getGraphicsQueue(),
                             m_VulkanDevice->getPresentQueue(),
-                            m_Resource->getVertexBuffer(), 
+                            m_Resource->getVertexBuffer(),
+                            m_Resource->getIndexBuffer(), 
                             vertices,
+                            indices,
                             device,
                             MAX_FRAMES_IN_FLIGHT
                     );

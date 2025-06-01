@@ -19,7 +19,9 @@ class VulkanRenderer {
             VkQueue graphicsQueue,
             VkQueue presentQueue,
             VkBuffer vertexBuffer,
+            VkBuffer indexBuffer,
             std::vector<Vertex> vertices,
+            std::vector<uint16_t> indices,
             VkDevice device,
             int framesInFlight
         ); 
@@ -47,8 +49,10 @@ class VulkanRenderer {
         VkQueue graphicsQueue;
         VkQueue presentQueue;
         VkBuffer vertexBuffer;
+        VkBuffer indexBuffer;
         VkDevice device;
         std::vector<Vertex> vertices;
+        std::vector<uint16_t> indices;
         int framesInFlight;
 
         std::vector<VkSemaphore> imageAvailableSemaphores;

@@ -13,7 +13,9 @@ VulkanRenderer::VulkanRenderer(
 	VkQueue graphicsQueue,
 	VkQueue presentQueue,
 	VkBuffer vertexBuffer,
+	VkBuffer indexBuffer,
 	std::vector<Vertex> vertices,
+	std::vector<uint16_t> indices,
 	VkDevice device,
 	int framesInFlight
 ) :
@@ -26,7 +28,9 @@ VulkanRenderer::VulkanRenderer(
 	graphicsQueue(graphicsQueue),
 	presentQueue(presentQueue),
 	vertexBuffer(vertexBuffer),
+	indexBuffer(indexBuffer),
 	vertices(vertices),
+	indices(indices),
 	device(device),
 	framesInFlight(framesInFlight),
 	m_context(context)
@@ -74,10 +78,18 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	VkBuffer vertexBuffers[] = { vertexBuffer };
 	VkDeviceSize offsets[] = { 0 };
 
+	//Driver developers recommend that you also store multiple buffers, 
+	//like the vertex and index buffer, into a single VkBuffer and use offsets in commands like vkCmdBindVertexBuffers.
+	//The advantage is that your data is more cache friendly in that case, because it’s closer together.
+	//It is even possible to reuse the same chunk of memory for multiple resources if they are not used during the same render operations,
+	//provided that their data is refreshed, of course. This is known as aliasing 
+	//and some Vulkan functions have explicit flags to specify that you want to do this.
+
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+	vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
-
-	vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+	//vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
 
