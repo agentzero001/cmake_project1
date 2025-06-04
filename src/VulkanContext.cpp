@@ -29,9 +29,9 @@ void VulkanContext::initVulkan() {
     createSurface();
     setupDevice();
     setupSwapChain();
-    setupPipeline();
     setupCommandBuffers();
     setupResourceBuffers();
+    setupPipeline();
     setupRenderer();
     
     
@@ -140,14 +140,17 @@ void VulkanContext::setupSwapChain() {
 }
 
 void VulkanContext::setupResourceBuffers() {
-    m_Resource = new VulkanResource(device, physicalDevice, m_VulkanDevice->getCommandPool(), m_VulkanDevice->getGraphicsQueue());
+    m_Resource = new VulkanResource(device, physicalDevice, m_VulkanDevice->getCommandPool(), m_VulkanDevice->getGraphicsQueue(), MAX_FRAMES_IN_FLIGHT);
     m_Resource->createVertexBuffer();
     m_Resource->createIndexBuffer();
-
+    m_Resource->createDescriptorSetLayout();
+    m_Resource->createUniformBuffers();
+    m_Resource->createDescriptorPool();
+    m_Resource->createDescriptorSets();
 }
 
 void VulkanContext::setupPipeline() {
-    m_Pipeline = new VulkanPipeline(device, swapChainImageFormat);
+    m_Pipeline = new VulkanPipeline(device, swapChainImageFormat, m_Resource->getDescriptorSetLayout());
     m_Pipeline->createRenderPass();
     m_Pipeline->createGraphicsPipeline();
     m_SwapChain->createFramebuffers(m_Pipeline->getRenderPass());
@@ -181,7 +184,10 @@ void VulkanContext::setupRenderer() {
                             vertices,
                             indices,
                             device,
-                            MAX_FRAMES_IN_FLIGHT
+                            MAX_FRAMES_IN_FLIGHT,
+                            m_Resource->getUniformBuffersMapped(),
+                            m_Resource->getDescriptorSets(),
+                            m_Pipeline->getPipelineLayout()
                     );
 
     m_Renderer->createSyncObjects();

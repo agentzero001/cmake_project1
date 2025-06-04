@@ -32,12 +32,13 @@ static std::vector<char> readFile(const std::string& filename) {
 
 class VulkanPipeline {
     public:
-        VulkanPipeline(VkDevice device, VkFormat swapChainImageFormat);
+        VulkanPipeline(VkDevice device, VkFormat swapChainImageFormat, VkDescriptorSetLayout descriptorSetLayout);
         void createGraphicsPipeline();
 		void cleanupPipeline();
 		void createRenderPass();
 		VkPipeline getPipeline() const { return graphicsPipeline; };
 		VkRenderPass getRenderPass() const { return renderPass; };
+		VkPipelineLayout getPipelineLayout() const { return pipelineLayout; };
 
 	private:
         VkDevice device; 
@@ -45,6 +46,7 @@ class VulkanPipeline {
 		VkPipelineLayout pipelineLayout;
 		VkRenderPass renderPass;
 		VkPipeline graphicsPipeline;
+		VkDescriptorSetLayout descriptorSetLayout;
 		
         VkShaderModule createShaderModule(const std::vector<char>& code);
 		

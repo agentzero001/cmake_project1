@@ -1,7 +1,9 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <iostream>
+#include <chrono>
 #include "VulkanResource.h"
+
 
 class VulkanContext;  // Forward declaration — no include needed
 
@@ -23,7 +25,10 @@ class VulkanRenderer {
             std::vector<Vertex> vertices,
             std::vector<uint16_t> indices,
             VkDevice device,
-            int framesInFlight
+            int framesInFlight,
+            std::vector<void*> uniformBuffersMapped,
+            std::vector<VkDescriptorSet> descriptorSets,
+            VkPipelineLayout pipelineLayout
         ); 
 
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
@@ -36,6 +41,7 @@ class VulkanRenderer {
         );
 
         void cleanup();
+
 
     private:
         VulkanContext* m_context;
@@ -60,6 +66,14 @@ class VulkanRenderer {
         std::vector<VkFence> inFlightFences;  
         
         uint32_t currentFrame = 0;
+
+        std::vector<void*> uniformBuffersMapped;
+
+        std::vector<VkDescriptorSet> descriptorSets;
+        VkPipelineLayout pipelineLayout;
+
+
+        void updateUniformBuffer(uint32_t currentFrame);
 
         
         

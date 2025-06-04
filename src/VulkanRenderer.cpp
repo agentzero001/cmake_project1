@@ -17,7 +17,11 @@ VulkanRenderer::VulkanRenderer(
 	std::vector<Vertex> vertices,
 	std::vector<uint16_t> indices,
 	VkDevice device,
-	int framesInFlight
+	int framesInFlight,
+	std::vector<void*> uniformBuffersMapped,
+	std::vector<VkDescriptorSet> descriptorSets,
+	VkPipelineLayout pipelineLayout
+
 ) :
 	commandBuffers(commandBuffers),
 	swapChainExtent(swapChainExtent),
@@ -33,7 +37,10 @@ VulkanRenderer::VulkanRenderer(
 	indices(indices),
 	device(device),
 	framesInFlight(framesInFlight),
-	m_context(context)
+	m_context(context),
+	uniformBuffersMapped(uniformBuffersMapped),
+	descriptorSets(descriptorSets),
+	pipelineLayout(pipelineLayout)
 	{}
 
 
@@ -88,6 +95,8 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 	vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
+	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
+
 	//vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
@@ -115,6 +124,8 @@ void VulkanRenderer::drawFrame() {
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
 		throw std::runtime_error("failed to acquire swap chain image!");
 	}
+
+	updateUniformBuffer(currentFrame);
 
 	vkResetFences(device, 1, &inFlightFences[currentFrame]);
 	vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
@@ -195,6 +206,27 @@ void VulkanRenderer::createSyncObjects() {
 	}
 
 }
+
+void VulkanRenderer::updateUniformBuffer(uint32_t currentImage) {
+	static auto startTime = std::chrono::high_resolution_clock::now();
+	auto currentTime = std::chrono::high_resolution_clock::now();
+	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+	UniformBufferObject ubo{};
+
+	//ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	ubo.model = glm::rotate(glm::mat4(1.0f), 2 * time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	ubo.view = glm::lookAt(glm::vec3(2.0f, 3.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
+	ubo.proj[1][1] *= -1;
+
+	std::cout << uniformBuffersMapped.size() << std::endl;
+
+	memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+
+}
+
 
 void VulkanRenderer::updateSwapChainResources(
 		VkSwapchainKHR newSwapChain,
