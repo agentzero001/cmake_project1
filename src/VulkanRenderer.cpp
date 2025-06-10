@@ -5,22 +5,22 @@
 VulkanRenderer::VulkanRenderer(
 	VulkanContext* context,
 	std::vector<VkCommandBuffer> commandBuffers,
-	VkExtent2D swapChainExtent,
-	VkRenderPass renderPass,
-	std::vector<VkFramebuffer> swapChainFramebuffers,
-	VkPipeline graphicsPipeline,
-	VkSwapchainKHR swapChain,
 	VkQueue graphicsQueue,
 	VkQueue presentQueue,
+	VkExtent2D swapChainExtent,
+	std::vector<VkFramebuffer> swapChainFramebuffers,
+	VkSwapchainKHR swapChain,
+	VkRenderPass renderPass,
+	VkPipeline graphicsPipeline,
+	VkPipelineLayout pipelineLayout,
 	VkBuffer vertexBuffer,
 	VkBuffer indexBuffer,
+	std::vector<void*> uniformBuffersMapped,
+	std::vector<VkDescriptorSet> descriptorSets,
 	std::vector<Vertex> vertices,
 	std::vector<uint16_t> indices,
 	VkDevice device,
-	int framesInFlight,
-	std::vector<void*> uniformBuffersMapped,
-	std::vector<VkDescriptorSet> descriptorSets,
-	VkPipelineLayout pipelineLayout
+	int framesInFlight
 
 ) :
 	commandBuffers(commandBuffers),
@@ -49,6 +49,7 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	VkCommandBufferBeginInfo beginInfo{};
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
+
 	if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
 		throw std::runtime_error("failed to begin recording command buffer!");
 	}
@@ -58,11 +59,17 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	renderPassInfo.renderPass = renderPass;
 	renderPassInfo.framebuffer = swapChainFramebuffers[imageIndex];
 	renderPassInfo.renderArea.offset = {0, 0};
-	renderPassInfo.renderArea.extent = swapChainExtent;
+	renderPassInfo.renderArea.extent = swapChainExtent; //m_swapChain->swapChainExtent;
 
-	VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
-	renderPassInfo.clearValueCount = 1;
-	renderPassInfo.pClearValues = &clearColor;
+	std::array<VkClearValue, 2> clearValues{};
+
+	clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+	clearValues[1].depthStencil = { 1.0f, 0 };
+
+	
+	renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+	renderPassInfo.pClearValues = clearValues.data();
+
 
 	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -214,10 +221,11 @@ void VulkanRenderer::updateUniformBuffer(uint32_t currentImage) {
 
 	UniformBufferObject ubo{};
 
-	//ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -0.5f));
 	ubo.model = glm::rotate(glm::mat4(1.0f), 2 * time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	//ubo.model *= glm::rotate(glm::mat4(1.0f), 2 * time * glm::radians(10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	ubo.view = glm::lookAt(glm::vec3(2.0f, 3.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
 	ubo.proj[1][1] *= -1;
 

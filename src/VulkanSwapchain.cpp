@@ -148,23 +148,23 @@ void VulkanSwapChain::createSwapChain() {
 
 void VulkanSwapChain::recreateSwapChain(VkRenderPass renderPass) {
 
-	int width = 0, height = 0;
-	glfwGetFramebufferSize(_window, &width, &height);
+	// int width = 0, height = 0;
+	// glfwGetFramebufferSize(_window, &width, &height);
 
-	while (width == 0 || height == 0) {
-		glfwGetFramebufferSize(_window, &width, &height);
-		glfwWaitEvents();
-	}
+	// while (width == 0 || height == 0) {
+	// 	glfwGetFramebufferSize(_window, &width, &height);
+	// 	glfwWaitEvents();
+	// }
 
-	vkDeviceWaitIdle(device); //do not touch resources that may still be in use
+	// vkDeviceWaitIdle(device); //do not touch resources that may still be in use
 
-	cleanupSwapChain();
+	// cleanupSwapChain();
 
 
-	createSwapChain();
-	createImageViews();
-	//createDepthResources();
-	createFramebuffers(renderPass);
+	// createSwapChain();
+	// createImageViews();
+	// //createDepthResources();
+	// createFramebuffers(renderPass);
 }
 
 
@@ -204,21 +204,23 @@ VkImageView VulkanSwapChain::createImageView(VkImage image, VkFormat format, VkI
 }
 
 
-void VulkanSwapChain::createFramebuffers(VkRenderPass renderPass) {
+void VulkanSwapChain::createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView) {
 
-	//i dont even know if thats possible whatever
+	_depthImageView = depthImageView;
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 	
 	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-		VkImageView attachments[] = {
-			swapChainImageViews[i]
+		std::array<VkImageView, 2> attachments = {
+			swapChainImageViews[i],
+			_depthImageView
 		};
+
 
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = renderPass;
-		framebufferInfo.attachmentCount = 1; //static_cast<uint32_t>(attachments.size());
-		framebufferInfo.pAttachments = attachments;
+		framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+		framebufferInfo.pAttachments = attachments.data();
 		framebufferInfo.width = swapChainExtent.width;
 		framebufferInfo.height = swapChainExtent.height;
 		framebufferInfo.layers = 1;

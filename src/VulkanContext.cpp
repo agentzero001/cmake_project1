@@ -114,8 +114,6 @@ void VulkanContext::createSurface() {
 }
 
 
-
-
 void VulkanContext::setupDevice() {
     m_VulkanDevice = new VulkanDevice(instance, _surface);
     m_VulkanDevice->pickPhysicalDevice();
@@ -126,10 +124,8 @@ void VulkanContext::setupDevice() {
     
 }
 
-
 void VulkanContext::setupSwapChain() {
     QueueFamilyIndices q_indices = m_VulkanDevice->getIndices();
-//    std::cout << q_indices.graphicsFamily.value() << std::endl;
 
     m_SwapChain = new VulkanSwapChain(_surface, device, physicalDevice, _window, q_indices);
     m_SwapChain->createSwapChain();
@@ -139,56 +135,59 @@ void VulkanContext::setupSwapChain() {
 
 }
 
-void VulkanContext::setupResourceBuffers() {
-    m_Resource = new VulkanResource(device, physicalDevice, m_VulkanDevice->getCommandPool(), m_VulkanDevice->getGraphicsQueue(), MAX_FRAMES_IN_FLIGHT);
-    m_Resource->createVertexBuffer();
-    m_Resource->createIndexBuffer();
-    m_Resource->createDescriptorSetLayout();
-    m_Resource->createUniformBuffers();
-    m_Resource->createDescriptorPool();
-    m_Resource->createDescriptorSets();
-}
-
-void VulkanContext::setupPipeline() {
-    m_Pipeline = new VulkanPipeline(device, swapChainImageFormat, m_Resource->getDescriptorSetLayout());
-    m_Pipeline->createRenderPass();
-    m_Pipeline->createGraphicsPipeline();
-    m_SwapChain->createFramebuffers(m_Pipeline->getRenderPass());
-    
-}
-
-
-
-
 void VulkanContext::setupCommandBuffers() {
     m_VulkanDevice->createCommandPool();    
     m_VulkanDevice->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
 
 }
 
+void VulkanContext::setupResourceBuffers() {
+    m_Resource = new VulkanResource(
+        device,
+        physicalDevice,
+        m_VulkanDevice->getCommandPool(),
+        m_VulkanDevice->getGraphicsQueue(),
+        m_SwapChain->getSwapChainExtent(),
+        MAX_FRAMES_IN_FLIGHT
+    );
+    m_Resource->createVertexBuffer();
+    m_Resource->createIndexBuffer();
+    m_Resource->createDescriptorSetLayout();
+    m_Resource->createUniformBuffers();
+    m_Resource->createDescriptorPool();
+    m_Resource->createDescriptorSets();
+    m_Resource->createDepthResources();
+}
 
+void VulkanContext::setupPipeline() {
+    m_Pipeline = new VulkanPipeline(device, physicalDevice, swapChainImageFormat, m_Resource->getDescriptorSetLayout());
+    m_Pipeline->createRenderPass();
+    m_Pipeline->createGraphicsPipeline();
+    m_SwapChain->createFramebuffers(m_Pipeline->getRenderPass(), m_Resource->getDepthImageView());
+    
+}
 
 void VulkanContext::setupRenderer() {
     m_Renderer = new VulkanRenderer(
-                            this,
-                            m_VulkanDevice->getCommandBuffers(),
-                            m_SwapChain->getSwapChainExtent(),
-                            m_Pipeline->getRenderPass(),
-                            m_SwapChain->getSwapChainFrameBuffers(),
-                            m_Pipeline->getPipeline(),
-                            m_SwapChain->getswapChain(),
-                            m_VulkanDevice->getGraphicsQueue(),
-                            m_VulkanDevice->getPresentQueue(),
-                            m_Resource->getVertexBuffer(),
-                            m_Resource->getIndexBuffer(), 
-                            vertices,
-                            indices,
-                            device,
-                            MAX_FRAMES_IN_FLIGHT,
-                            m_Resource->getUniformBuffersMapped(),
-                            m_Resource->getDescriptorSets(),
-                            m_Pipeline->getPipelineLayout()
-                    );
+        this,
+        m_VulkanDevice->getCommandBuffers(),
+        m_VulkanDevice->getGraphicsQueue(),
+        m_VulkanDevice->getPresentQueue(),
+        m_SwapChain->getSwapChainExtent(),
+        m_SwapChain->getSwapChainFrameBuffers(),
+        m_SwapChain->getswapChain(),
+        m_Pipeline->getRenderPass(),
+        m_Pipeline->getPipeline(),
+        m_Pipeline->getPipelineLayout(),
+        m_Resource->getVertexBuffer(),
+        m_Resource->getIndexBuffer(),
+        m_Resource->getUniformBuffersMapped(),
+        m_Resource->getDescriptorSets(),
+        vertices,
+        indices,
+        device,
+        MAX_FRAMES_IN_FLIGHT
+        );
 
     m_Renderer->createSyncObjects();
 }

@@ -1,14 +1,21 @@
 #include "VulkanResource.h"
+#include "VulkanUtils.h"
 
 const std::vector<Vertex> vertices = {
-    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+    {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+    {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+    {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+    {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}},
+
+    {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}}
 };
 
 const std::vector<uint16_t> indices = {
-    0, 1, 2, 2, 3, 0
+    0, 1, 2, 2, 3, 0,
+    4, 5, 6, 6, 7, 4 
 };
 
 
@@ -18,13 +25,15 @@ VulkanResource::VulkanResource(
     VkPhysicalDevice physicalDevice,
     VkCommandPool commandPool,
     VkQueue graphicsQueue,
+    VkExtent2D swapChainExtent,
     int FRAMES_IN_FLIGHT
 ) : 
     device(device), 
     physicalDevice(physicalDevice),
     commandPool(commandPool),
     graphicsQueue(graphicsQueue),
-    FRAMES_IN_FLIGHT(FRAMES_IN_FLIGHT)
+    FRAMES_IN_FLIGHT(FRAMES_IN_FLIGHT),
+    swapChainExtent(swapChainExtent)
     {}
 
 VkVertexInputBindingDescription Vertex::getBindingDescription() {
@@ -85,7 +94,7 @@ void VulkanResource::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, V
 	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties, physicalDevice);
 
     //The right way to allocate memory for a large number of objects at the same time is to create a custom allocator
     //that splits up a single allocation among many different objects by using the offset parameters
@@ -151,18 +160,18 @@ void VulkanResource::createIndexBuffer() {
 
 //Graphics cards can offer different types of memory to allocate from.
 //Each type of memory varies in terms of allowed operations and performance characteristics.
-uint32_t VulkanResource::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
-    VkPhysicalDeviceMemoryProperties memProperties;
-    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+// uint32_t VulkanResource::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+//     VkPhysicalDeviceMemoryProperties memProperties;
+//     vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
 
-    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-        if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
-            return i;
-        }
-    }
+//     for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+//         if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+//             return i;
+//         }
+//     }
 
-    throw std::runtime_error("failed to find suitable memory type!");
-}
+//     throw std::runtime_error("failed to find suitable memory type!");
+// }
 
 void VulkanResource::createDescriptorSetLayout() {
     VkDescriptorSetLayoutBinding uboLayoutBinding{};
@@ -261,6 +270,27 @@ void VulkanResource::createDescriptorSets() {
         vkUpdateDescriptorSets(device, 1, &descriptorWrite, 0, nullptr); //possible use of VkCopyDescriptorSet.
         
     }
+}
+
+
+void VulkanResource::createDepthResources() {
+    VkFormat depthFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;//findDepthFormat(physicalDevice);
+
+	createImage(
+		swapChainExtent.width,
+		swapChainExtent.height, 
+		depthFormat, 
+		VK_IMAGE_TILING_OPTIMAL,
+		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		depthImage,
+		depthImageMemory,
+		device,
+		physicalDevice
+	);
+
+	depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT , device);
+
 }
 
 void VulkanResource::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {

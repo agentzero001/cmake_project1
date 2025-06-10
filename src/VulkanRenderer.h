@@ -6,29 +6,29 @@
 
 
 class VulkanContext;  // Forward declaration — no include needed
-
+class VulkanSwapChain;
 
 class VulkanRenderer {
     public:
         VulkanRenderer(
             VulkanContext* context,
             std::vector<VkCommandBuffer> commandBuffers,
-            VkExtent2D swapChainExtent,
-            VkRenderPass renderPass,
-            std::vector<VkFramebuffer> swapChainFramebuffers,
-            VkPipeline graphicsPipeline,
-            VkSwapchainKHR swapChain,
             VkQueue graphicsQueue,
             VkQueue presentQueue,
+            VkExtent2D swapChainExtent,
+            std::vector<VkFramebuffer> swapChainFramebuffers,
+            VkSwapchainKHR swapChain,
+            VkRenderPass renderPass,
+            VkPipeline graphicsPipeline,
+            VkPipelineLayout pipelineLayout,
             VkBuffer vertexBuffer,
             VkBuffer indexBuffer,
+            std::vector<void*> uniformBuffersMapped,
+            std::vector<VkDescriptorSet> descriptorSets,
             std::vector<Vertex> vertices,
             std::vector<uint16_t> indices,
             VkDevice device,
-            int framesInFlight,
-            std::vector<void*> uniformBuffersMapped,
-            std::vector<VkDescriptorSet> descriptorSets,
-            VkPipelineLayout pipelineLayout
+            int framesInFlight
         ); 
 
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
@@ -45,6 +45,7 @@ class VulkanRenderer {
 
     private:
         VulkanContext* m_context;
+        //VulkanSwapChain* m_swapChain;
 
         VkExtent2D swapChainExtent;
         std::vector<VkCommandBuffer> commandBuffers;

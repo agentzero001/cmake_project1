@@ -40,6 +40,8 @@ add_executable(cmake_project1
                 src/VulkanRenderer.h
                 src/VulkanResource.cpp
                 src/VulkanResource.h
+                src/VulkanUtils.cpp
+                src/VulkanUtils.h
                 )
 
 target_link_libraries(cmake_project1 glfw3 vulkan-1)

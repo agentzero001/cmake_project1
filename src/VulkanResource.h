@@ -7,7 +7,7 @@
 #include <array>
 
 struct Vertex {
-    glm::vec2 pos;
+    glm::vec3 pos;
     glm::vec3 color;
 
     static VkVertexInputBindingDescription getBindingDescription();
@@ -15,9 +15,9 @@ struct Vertex {
 };
 
 struct UniformBufferObject {
-    glm::mat4 model;
-    glm::mat4 view;
-    glm::mat4 proj;
+    alignas(16) glm::mat4 model;
+    alignas(16) glm::mat4 view;
+    alignas(16) glm::mat4 proj;
 };
 
 extern const std::vector<Vertex> vertices;
@@ -30,6 +30,7 @@ class VulkanResource {
             VkPhysicalDevice physicalDevice,
             VkCommandPool commandPool,
             VkQueue graphicsQueue,
+            VkExtent2D swapChainExtent,
             int FRAMES_IN_FLIGHT
         );
         void createVertexBuffer();
@@ -38,12 +39,14 @@ class VulkanResource {
         void createUniformBuffers();
         void createDescriptorPool();
         void createDescriptorSets();
+        void createDepthResources();
         void cleanupResources();
         VkBuffer getVertexBuffer() const { return vertexBuffer; };
         VkBuffer getIndexBuffer() const { return indexBuffer; };
         VkDescriptorSetLayout getDescriptorSetLayout() const { return descriptorSetLayout; }; 
         std::vector<void*> getUniformBuffersMapped() const { return uniformBuffersMapped; };
         std::vector<VkDescriptorSet> getDescriptorSets() const {return descriptorSets; };
+        VkImageView getDepthImageView() const { return depthImageView; };
     
     private:
         VkDevice device;
@@ -62,14 +65,18 @@ class VulkanResource {
         VkDescriptorPool descriptorPool;
         std::vector<VkDescriptorSet> descriptorSets;
 
+        VkImage depthImage;
+        VkDeviceMemory depthImageMemory;
+        VkImageView depthImageView;
 
 
         VkCommandPool commandPool;
         VkQueue graphicsQueue;
+        VkExtent2D swapChainExtent;
 
         int FRAMES_IN_FLIGHT;
 
         void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+        //uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 };

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <array>
 #include "VulkanDevice.h"
 
 
@@ -27,9 +28,8 @@ class VulkanSwapChain {
         void createSwapChain();
         void recreateSwapChain(VkRenderPass renderPass);
         void createImageViews();
-        void createFramebuffers(VkRenderPass renderPass);
+        void createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView);
         void cleanupSwapChain();
-
         
         VkSwapchainKHR getswapChain() const { return swapChain; };
         VkFormat getSwapChainImageFormat() const { return swapChainImageFormat; }
@@ -46,9 +46,10 @@ class VulkanSwapChain {
         std::vector<VkImageView> swapChainImageViews;
 
         VkFormat swapChainImageFormat;
-        VkExtent2D swapChainExtent;
         QueueFamilyIndices indices;
         std::vector<VkFramebuffer> swapChainFramebuffers;
+        VkExtent2D swapChainExtent;
+        VkImageView _depthImageView;
         
 
 
