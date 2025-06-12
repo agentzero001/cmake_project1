@@ -39,7 +39,7 @@ class VulkanResource {
         void createUniformBuffers();
         void createDescriptorPool();
         void createDescriptorSets();
-        void createDepthResources();
+        void createDepthResources(VkExtent2D swapChainExtent);
         void cleanupResources();
         VkBuffer getVertexBuffer() const { return vertexBuffer; };
         VkBuffer getIndexBuffer() const { return indexBuffer; };

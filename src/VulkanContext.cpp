@@ -156,7 +156,7 @@ void VulkanContext::setupResourceBuffers() {
     m_Resource->createUniformBuffers();
     m_Resource->createDescriptorPool();
     m_Resource->createDescriptorSets();
-    m_Resource->createDepthResources();
+    m_Resource->createDepthResources(m_SwapChain->getSwapChainExtent());
 }
 
 void VulkanContext::setupPipeline() {
@@ -183,6 +183,7 @@ void VulkanContext::setupRenderer() {
         m_Resource->getIndexBuffer(),
         m_Resource->getUniformBuffersMapped(),
         m_Resource->getDescriptorSets(),
+        m_Resource->getDepthImageView(),
         vertices,
         indices,
         device,
@@ -210,6 +211,39 @@ std::vector<const char*> VulkanContext::getRequiredExtenstions() {
 
 
 void VulkanContext::updateSwapChain() {
-    m_SwapChain->recreateSwapChain(m_Pipeline->getRenderPass());
-    m_Renderer->updateSwapChainResources(m_SwapChain->getswapChain(), m_SwapChain->getSwapChainFrameBuffers(), m_SwapChain->getSwapChainExtent());
+    recreateSwapChain(m_Pipeline->getRenderPass());
+    m_Renderer->updateSwapChainResources(m_SwapChain->getswapChain(), m_SwapChain->getSwapChainFrameBuffers(), m_SwapChain->getSwapChainExtent(), m_Resource->getDepthImageView());
+}
+
+
+void VulkanContext::recreateSwapChain(VkRenderPass renderPass) {
+
+
+    QueueFamilyIndices q_indices = m_VulkanDevice->getIndices();
+	int width = 0, height = 0;
+	glfwGetFramebufferSize(_window, &width, &height);
+
+	while (width == 0 || height == 0) {
+		glfwGetFramebufferSize(_window, &width, &height);
+		glfwWaitEvents();
+	}
+
+	vkDeviceWaitIdle(device); //do not touch resources that may still be in use
+
+	m_SwapChain->cleanupSwapChain();
+
+
+	
+
+    //m_SwapChain = new VulkanSwapChain(_surface, device, physicalDevice, _window, q_indices);
+
+    m_SwapChain->createSwapChain();
+
+    m_SwapChain->createImageViews();
+
+    m_Resource->createDepthResources(m_SwapChain->getSwapChainExtent());
+
+    VkImageView depthImageView = m_Resource->getDepthImageView();
+	m_SwapChain->createFramebuffers(renderPass, depthImageView);
+	
 }

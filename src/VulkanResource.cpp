@@ -273,7 +273,7 @@ void VulkanResource::createDescriptorSets() {
 }
 
 
-void VulkanResource::createDepthResources() {
+void VulkanResource::createDepthResources(VkExtent2D swapChainExtent) {
     VkFormat depthFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;//findDepthFormat(physicalDevice);
 
 	createImage(

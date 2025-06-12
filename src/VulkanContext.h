@@ -38,6 +38,7 @@ class VulkanContext {
         VulkanSwapChain* m_SwapChain;
         bool framebufferResized = false;
         void updateSwapChain();
+        void recreateSwapChain(VkRenderPass renderPass);
         void run();       
 
     private: 
@@ -67,6 +68,7 @@ class VulkanContext {
         void setupResourceBuffers();
         void setupRenderer();
         std::vector<const char*> getRequiredExtenstions();
+        
         
 
         static void framebufferResizeCallback(GLFWwindow* window, int witdth, int height) {

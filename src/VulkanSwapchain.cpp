@@ -146,26 +146,25 @@ void VulkanSwapChain::createSwapChain() {
 
 }
 
-void VulkanSwapChain::recreateSwapChain(VkRenderPass renderPass) {
+// void VulkanSwapChain::recreateSwapChain(VkRenderPass renderPass, VkImageView depthImageView) {
 
-	// int width = 0, height = 0;
-	// glfwGetFramebufferSize(_window, &width, &height);
+// 	int width = 0, height = 0;
+// 	glfwGetFramebufferSize(_window, &width, &height);
 
-	// while (width == 0 || height == 0) {
-	// 	glfwGetFramebufferSize(_window, &width, &height);
-	// 	glfwWaitEvents();
-	// }
+// 	while (width == 0 || height == 0) {
+// 		glfwGetFramebufferSize(_window, &width, &height);
+// 		glfwWaitEvents();
+// 	}
 
-	// vkDeviceWaitIdle(device); //do not touch resources that may still be in use
+// 	vkDeviceWaitIdle(device); //do not touch resources that may still be in use
 
-	// cleanupSwapChain();
+// 	cleanupSwapChain();
 
 
-	// createSwapChain();
-	// createImageViews();
-	// //createDepthResources();
-	// createFramebuffers(renderPass);
-}
+// 	createSwapChain();
+// 	createImageViews();
+// 	createFramebuffers(renderPass, depthImageView);
+// }
 
 
 
@@ -205,14 +204,15 @@ VkImageView VulkanSwapChain::createImageView(VkImage image, VkFormat format, VkI
 
 
 void VulkanSwapChain::createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView) {
-
+	
 	_depthImageView = depthImageView;
+	
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 	
 	for (size_t i = 0; i < swapChainImageViews.size(); i++) {
 		std::array<VkImageView, 2> attachments = {
 			swapChainImageViews[i],
-			_depthImageView
+			depthImageView
 		};
 
 

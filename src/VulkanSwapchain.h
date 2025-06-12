@@ -26,7 +26,7 @@ class VulkanSwapChain {
         );
 
         void createSwapChain();
-        void recreateSwapChain(VkRenderPass renderPass);
+        void recreateSwapChain(VkRenderPass renderPass, VkImageView depthImageView);
         void createImageViews();
         void createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView);
         void cleanupSwapChain();
@@ -57,6 +57,6 @@ class VulkanSwapChain {
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
         VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
         VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
-        VkImageView VulkanSwapChain::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkDevice device);
+        VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkDevice device);
 
 }; 

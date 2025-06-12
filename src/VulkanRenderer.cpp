@@ -17,6 +17,7 @@ VulkanRenderer::VulkanRenderer(
 	VkBuffer indexBuffer,
 	std::vector<void*> uniformBuffersMapped,
 	std::vector<VkDescriptorSet> descriptorSets,
+	VkImageView depthImageView,
 	std::vector<Vertex> vertices,
 	std::vector<uint16_t> indices,
 	VkDevice device,
@@ -40,7 +41,8 @@ VulkanRenderer::VulkanRenderer(
 	m_context(context),
 	uniformBuffersMapped(uniformBuffersMapped),
 	descriptorSets(descriptorSets),
-	pipelineLayout(pipelineLayout)
+	pipelineLayout(pipelineLayout),
+	_depthImageView(depthImageView)
 	{}
 
 
@@ -125,7 +127,8 @@ void VulkanRenderer::drawFrame() {
 	VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-		m_context->m_SwapChain->recreateSwapChain(renderPass);
+		m_context->updateSwapChain();
+		// m_context->recreateSwapChain(renderPass);
 		return;
 	}
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
@@ -176,7 +179,7 @@ void VulkanRenderer::drawFrame() {
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
 		m_context->framebufferResized = false;
 		m_context->updateSwapChain();
-//		m_context->m_SwapChain->recreateSwapChain(renderPass);
+		// m_context->recreateSwapChain(renderPass);
 	}
 	else if (result != VK_SUCCESS) {
 		throw std::runtime_error("failed to present swap chain image!");
@@ -229,7 +232,7 @@ void VulkanRenderer::updateUniformBuffer(uint32_t currentImage) {
 	ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
 	ubo.proj[1][1] *= -1;
 
-	std::cout << uniformBuffersMapped.size() << std::endl;
+	//std::cout << uniformBuffersMapped.size() << std::endl;
 
 	memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 
@@ -239,11 +242,13 @@ void VulkanRenderer::updateUniformBuffer(uint32_t currentImage) {
 void VulkanRenderer::updateSwapChainResources(
 		VkSwapchainKHR newSwapChain,
 		std::vector<VkFramebuffer> newSwapChainFramebuffers,
-		VkExtent2D newSwapChainExtent
+		VkExtent2D newSwapChainExtent,
+		VkImageView depthImageView
 	) {
 	swapChain = newSwapChain;
 	swapChainFramebuffers = newSwapChainFramebuffers;
 	swapChainExtent = newSwapChainExtent;
+	_depthImageView = depthImageView;
 
 }
 
