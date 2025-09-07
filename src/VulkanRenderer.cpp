@@ -19,7 +19,7 @@ VulkanRenderer::VulkanRenderer(
 	std::vector<VkDescriptorSet> descriptorSets,
 	VkImageView depthImageView,
 	std::vector<Vertex> vertices,
-	std::vector<uint16_t> indices,
+	std::vector<uint32_t> indices,
 	VkDevice device,
 	int framesInFlight
 
@@ -102,7 +102,7 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	//and some Vulkan functions have explicit flags to specify that you want to do this.
 
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-	vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+	vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
 	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
 

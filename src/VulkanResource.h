@@ -1,10 +1,17 @@
 #pragma once
 
+//#define TINYOBJLOADER_IMPLEMENTATION
+
 #include <vulkan/vulkan.h>
 #include <iostream>
 #include <vector>
 #include <glm/glm.hpp>
 #include <array>
+#include <tiny_obj_loader.h>
+
+
+
+inline std::string MODEL_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/models/viking_room.obj";
 
 struct Vertex {
     glm::vec3 pos;
@@ -20,11 +27,12 @@ struct UniformBufferObject {
     alignas(16) glm::mat4 proj;
 };
 
-extern const std::vector<Vertex> vertices;
-extern const std::vector<uint16_t> indices;
+
 
 class VulkanResource {
     public:
+
+        
         VulkanResource(
             VkDevice device,
             VkPhysicalDevice physicalDevice,
@@ -47,6 +55,14 @@ class VulkanResource {
         std::vector<void*> getUniformBuffersMapped() const { return uniformBuffersMapped; };
         std::vector<VkDescriptorSet> getDescriptorSets() const {return descriptorSets; };
         VkImageView getDepthImageView() const { return depthImageView; };
+
+        std::vector<Vertex> getVertices() const {return vertices; };
+        std::vector<uint32_t> getIndices() const {return indices; };
+
+        void loadModel();
+
+
+
     
     private:
         VkDevice device;
@@ -68,6 +84,9 @@ class VulkanResource {
         VkImage depthImage;
         VkDeviceMemory depthImageMemory;
         VkImageView depthImageView;
+
+        std::vector<Vertex> vertices;
+        std::vector<uint32_t> indices;
 
 
         VkCommandPool commandPool;

@@ -27,7 +27,7 @@ class VulkanRenderer {
             std::vector<VkDescriptorSet> descriptorSets,
             VkImageView depthImageView,
             std::vector<Vertex> vertices,
-            std::vector<uint16_t> indices,
+            std::vector<uint32_t> indices,
             VkDevice device,
             int framesInFlight
         ); 
@@ -61,7 +61,7 @@ class VulkanRenderer {
         VkBuffer indexBuffer;
         VkDevice device;
         std::vector<Vertex> vertices;
-        std::vector<uint16_t> indices;
+        std::vector<uint32_t> indices;
         int framesInFlight;
 
         std::vector<VkSemaphore> imageAvailableSemaphores;

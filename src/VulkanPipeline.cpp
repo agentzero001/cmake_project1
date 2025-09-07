@@ -15,8 +15,8 @@ VulkanPipeline::VulkanPipeline(
 
 
 void VulkanPipeline::createGraphicsPipeline() {
-    auto vertShaderCode = readFile("C:/Users/jensm/Desktop/cmake_project1/src/shaders/vert.spv");
-    auto fragShaderCode = readFile("C:/Users/jensm/Desktop/cmake_project1/src/shaders/frag.spv");
+    auto vertShaderCode = readFile("C:/Users/jensm/Desktop/cmake_project1/res/shaders/vert.spv");
+    auto fragShaderCode = readFile("C:/Users/jensm/Desktop/cmake_project1/res/shaders/frag.spv");
 
     VkShaderModule vertShaderModule = VulkanPipeline::createShaderModule(vertShaderCode);
 	VkShaderModule fragShaderModule = VulkanPipeline::createShaderModule(fragShaderCode);

@@ -150,6 +150,9 @@ void VulkanContext::setupResourceBuffers() {
         m_SwapChain->getSwapChainExtent(),
         MAX_FRAMES_IN_FLIGHT
     );
+
+
+    m_Resource->loadModel();
     m_Resource->createVertexBuffer();
     m_Resource->createIndexBuffer();
     m_Resource->createDescriptorSetLayout();
@@ -157,6 +160,8 @@ void VulkanContext::setupResourceBuffers() {
     m_Resource->createDescriptorPool();
     m_Resource->createDescriptorSets();
     m_Resource->createDepthResources(m_SwapChain->getSwapChainExtent());
+    
+    
 }
 
 void VulkanContext::setupPipeline() {
@@ -184,8 +189,8 @@ void VulkanContext::setupRenderer() {
         m_Resource->getUniformBuffersMapped(),
         m_Resource->getDescriptorSets(),
         m_Resource->getDepthImageView(),
-        vertices,
-        indices,
+        m_Resource->getVertices(),
+        m_Resource->getIndices(),
         device,
         MAX_FRAMES_IN_FLIGHT
         );
