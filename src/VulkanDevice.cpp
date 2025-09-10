@@ -46,11 +46,15 @@ void VulkanDevice::pickPhysicalDevice() {
 }
 
 bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice physicaldevice) {
+   	VkPhysicalDeviceFeatures supportedFeatures;
+	vkGetPhysicalDeviceFeatures(physicaldevice, &supportedFeatures);
+
+
     QueueFamilyIndices indices = findQueueFamilies(physicaldevice, surface);
 
     bool extensionsSupported = checkDeviceExtensionSupport(physicaldevice);
 
-    return indices.isComplete() && extensionsSupported;
+    return indices.isComplete() && extensionsSupported &&supportedFeatures.samplerAnisotropy;
 }
 
 bool VulkanDevice::checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice) {
@@ -126,6 +130,9 @@ void VulkanDevice::createLogicalDevice() {
 
 
     VkPhysicalDeviceFeatures deviceFeatures{};
+    deviceFeatures.samplerAnisotropy = VK_TRUE;
+
+
     
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

@@ -26,6 +26,8 @@ include_directories("C:/Users/jensm/Desktop/local/glm-1.0.1")
 
 include_directories("C:/Users/jensm/Documents/Visual Studio 2022/tinyobjloader-release")
 
+include_directories("C:/Users/jensm/Documents/Visual Studio 2022/stb-master")
+
 # Source files
 add_executable(cmake_project1
                 src/main.cpp

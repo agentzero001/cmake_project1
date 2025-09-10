@@ -51,7 +51,7 @@ build cmake_object_order_depends_target_cmake_project1: phony || .
 
 build CMakeFiles\cmake_project1.dir\src\main.cpp.obj: CXX_COMPILER__cmake_project1_unscanned_Debug C$:\Users\jensm\Desktop\cmake_project1\src\main.cpp || cmake_object_order_depends_target_cmake_project1
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release"
+  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release" -I"C:\Users\jensm\Documents\Visual Studio 2022\stb-master"
   OBJECT_DIR = CMakeFiles\cmake_project1.dir
   OBJECT_FILE_DIR = CMakeFiles\cmake_project1.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\
@@ -59,7 +59,7 @@ build CMakeFiles\cmake_project1.dir\src\main.cpp.obj: CXX_COMPILER__cmake_projec
 
 build CMakeFiles\cmake_project1.dir\src\VulkanContext.cpp.obj: CXX_COMPILER__cmake_project1_unscanned_Debug C$:\Users\jensm\Desktop\cmake_project1\src\VulkanContext.cpp || cmake_object_order_depends_target_cmake_project1
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release"
+  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release" -I"C:\Users\jensm\Documents\Visual Studio 2022\stb-master"
   OBJECT_DIR = CMakeFiles\cmake_project1.dir
   OBJECT_FILE_DIR = CMakeFiles\cmake_project1.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\
@@ -67,7 +67,7 @@ build CMakeFiles\cmake_project1.dir\src\VulkanContext.cpp.obj: CXX_COMPILER__cma
 
 build CMakeFiles\cmake_project1.dir\src\VulkanDevice.cpp.obj: CXX_COMPILER__cmake_project1_unscanned_Debug C$:\Users\jensm\Desktop\cmake_project1\src\VulkanDevice.cpp || cmake_object_order_depends_target_cmake_project1
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release"
+  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release" -I"C:\Users\jensm\Documents\Visual Studio 2022\stb-master"
   OBJECT_DIR = CMakeFiles\cmake_project1.dir
   OBJECT_FILE_DIR = CMakeFiles\cmake_project1.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\
@@ -75,7 +75,7 @@ build CMakeFiles\cmake_project1.dir\src\VulkanDevice.cpp.obj: CXX_COMPILER__cmak
 
 build CMakeFiles\cmake_project1.dir\src\VulkanDebug.cpp.obj: CXX_COMPILER__cmake_project1_unscanned_Debug C$:\Users\jensm\Desktop\cmake_project1\src\VulkanDebug.cpp || cmake_object_order_depends_target_cmake_project1
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release"
+  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release" -I"C:\Users\jensm\Documents\Visual Studio 2022\stb-master"
   OBJECT_DIR = CMakeFiles\cmake_project1.dir
   OBJECT_FILE_DIR = CMakeFiles\cmake_project1.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\
@@ -83,7 +83,7 @@ build CMakeFiles\cmake_project1.dir\src\VulkanDebug.cpp.obj: CXX_COMPILER__cmake
 
 build CMakeFiles\cmake_project1.dir\src\VulkanSwapchain.cpp.obj: CXX_COMPILER__cmake_project1_unscanned_Debug C$:\Users\jensm\Desktop\cmake_project1\src\VulkanSwapchain.cpp || cmake_object_order_depends_target_cmake_project1
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release"
+  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release" -I"C:\Users\jensm\Documents\Visual Studio 2022\stb-master"
   OBJECT_DIR = CMakeFiles\cmake_project1.dir
   OBJECT_FILE_DIR = CMakeFiles\cmake_project1.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\
@@ -91,7 +91,7 @@ build CMakeFiles\cmake_project1.dir\src\VulkanSwapchain.cpp.obj: CXX_COMPILER__c
 
 build CMakeFiles\cmake_project1.dir\src\VulkanPipeline.cpp.obj: CXX_COMPILER__cmake_project1_unscanned_Debug C$:\Users\jensm\Desktop\cmake_project1\src\VulkanPipeline.cpp || cmake_object_order_depends_target_cmake_project1
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release"
+  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release" -I"C:\Users\jensm\Documents\Visual Studio 2022\stb-master"
   OBJECT_DIR = CMakeFiles\cmake_project1.dir
   OBJECT_FILE_DIR = CMakeFiles\cmake_project1.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\
@@ -99,7 +99,7 @@ build CMakeFiles\cmake_project1.dir\src\VulkanPipeline.cpp.obj: CXX_COMPILER__cm
 
 build CMakeFiles\cmake_project1.dir\src\VulkanRenderer.cpp.obj: CXX_COMPILER__cmake_project1_unscanned_Debug C$:\Users\jensm\Desktop\cmake_project1\src\VulkanRenderer.cpp || cmake_object_order_depends_target_cmake_project1
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release"
+  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release" -I"C:\Users\jensm\Documents\Visual Studio 2022\stb-master"
   OBJECT_DIR = CMakeFiles\cmake_project1.dir
   OBJECT_FILE_DIR = CMakeFiles\cmake_project1.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\
@@ -107,7 +107,7 @@ build CMakeFiles\cmake_project1.dir\src\VulkanRenderer.cpp.obj: CXX_COMPILER__cm
 
 build CMakeFiles\cmake_project1.dir\src\VulkanResource.cpp.obj: CXX_COMPILER__cmake_project1_unscanned_Debug C$:\Users\jensm\Desktop\cmake_project1\src\VulkanResource.cpp || cmake_object_order_depends_target_cmake_project1
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release"
+  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release" -I"C:\Users\jensm\Documents\Visual Studio 2022\stb-master"
   OBJECT_DIR = CMakeFiles\cmake_project1.dir
   OBJECT_FILE_DIR = CMakeFiles\cmake_project1.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\
@@ -115,7 +115,7 @@ build CMakeFiles\cmake_project1.dir\src\VulkanResource.cpp.obj: CXX_COMPILER__cm
 
 build CMakeFiles\cmake_project1.dir\src\VulkanUtils.cpp.obj: CXX_COMPILER__cmake_project1_unscanned_Debug C$:\Users\jensm\Desktop\cmake_project1\src\VulkanUtils.cpp || cmake_object_order_depends_target_cmake_project1
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release"
+  INCLUDES = -IC:\VulkanSDK\1.3.290.0\Include -I"C:\Users\jensm\Desktop\local\visual studio\glfw-3.4.bin.WIN64\include" -IC:\Users\jensm\Desktop\local\glm-1.0.1 -I"C:\Users\jensm\Documents\Visual Studio 2022\tinyobjloader-release" -I"C:\Users\jensm\Documents\Visual Studio 2022\stb-master"
   OBJECT_DIR = CMakeFiles\cmake_project1.dir
   OBJECT_FILE_DIR = CMakeFiles\cmake_project1.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\cmake_project1.dir\

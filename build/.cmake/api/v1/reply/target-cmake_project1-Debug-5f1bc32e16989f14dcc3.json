@@ -30,7 +30,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 30,
+				"line" : 32,
 				"parent" : 0
 			},
 			{
@@ -48,7 +48,7 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 50,
+				"line" : 52,
 				"parent" : 0
 			},
 			{
@@ -73,6 +73,12 @@
 				"command" : 3,
 				"file" : 0,
 				"line" : 27,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 29,
 				"parent" : 0
 			}
 		]
@@ -103,6 +109,10 @@
 				{
 					"backtrace" : 8,
 					"path" : "C:/Users/jensm/Documents/Visual Studio 2022/tinyobjloader-release"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "C:/Users/jensm/Documents/Visual Studio 2022/stb-master"
 				}
 			],
 			"language" : "CXX",

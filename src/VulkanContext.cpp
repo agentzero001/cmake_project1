@@ -1,7 +1,10 @@
 #include "VulkanContext.h"
 #include "VulkanRenderer.h"
 
+//#include <vulkan/vulkan_raii.hpp>
 using namespace VulkanDebug;
+
+
 
 
 void VulkanContext::run() {
@@ -151,7 +154,9 @@ void VulkanContext::setupResourceBuffers() {
         MAX_FRAMES_IN_FLIGHT
     );
 
-
+    m_Resource->createTextureImage();
+    m_Resource->createTextureImageView();
+    m_Resource->createTextureSampler();
     m_Resource->loadModel();
     m_Resource->createVertexBuffer();
     m_Resource->createIndexBuffer();
@@ -252,3 +257,6 @@ void VulkanContext::recreateSwapChain(VkRenderPass renderPass) {
 	m_SwapChain->createFramebuffers(renderPass, depthImageView);
 	
 }
+
+
+

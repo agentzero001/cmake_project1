@@ -8,17 +8,23 @@
 #include <glm/glm.hpp>
 #include <array>
 #include <tiny_obj_loader.h>
+#include <stb_image.h>
+#include <cmath>
+
 
 
 
 inline std::string MODEL_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/models/viking_room.obj";
 
+inline std::string TEXTURE_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/textures/viking_room.png";
+
 struct Vertex {
     glm::vec3 pos;
     glm::vec3 color;
+    glm::vec2 texCoord;
 
     static VkVertexInputBindingDescription getBindingDescription();
-    static std::array<VkVertexInputAttributeDescription, 2>  getAttributeDescriptions();
+    static std::array<VkVertexInputAttributeDescription, 3>  getAttributeDescriptions();
 };
 
 struct UniformBufferObject {
@@ -32,7 +38,6 @@ struct UniformBufferObject {
 class VulkanResource {
     public:
 
-        
         VulkanResource(
             VkDevice device,
             VkPhysicalDevice physicalDevice,
@@ -41,6 +46,10 @@ class VulkanResource {
             VkExtent2D swapChainExtent,
             int FRAMES_IN_FLIGHT
         );
+
+        void createTextureImage();
+        void createTextureImageView();
+        void createTextureSampler();
         void createVertexBuffer();
         void createIndexBuffer();
         void createDescriptorSetLayout();
@@ -93,9 +102,19 @@ class VulkanResource {
         VkQueue graphicsQueue;
         VkExtent2D swapChainExtent;
 
+        uint32_t mipLevels;
+
+        VkImage textureImage;
+        VkDeviceMemory textureImageMemory;
+        VkImageView textureImageView;
+        VkSampler textureSampler;
+
+
+
         int FRAMES_IN_FLIGHT;
 
         void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
         //uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+        void generateMipmaps(VkDevice device, VkImage image, VkFormat imageFormat, uint32_t texWidth, uint32_t texHeight, uint32_t mipLevels,  VkCommandPool commandPool, VkQueue graphicsQueue);
 };
