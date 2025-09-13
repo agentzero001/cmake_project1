@@ -28,6 +28,8 @@ VulkanResource::VulkanResource(
     VkCommandPool commandPool,
     VkQueue graphicsQueue,
     VkExtent2D swapChainExtent,
+	VkSampleCountFlagBits msaaSamples,
+	VkFormat swapChainImageFormat,
     int FRAMES_IN_FLIGHT
 ) : 
     device(device), 
@@ -35,7 +37,9 @@ VulkanResource::VulkanResource(
     commandPool(commandPool),
     graphicsQueue(graphicsQueue),
     FRAMES_IN_FLIGHT(FRAMES_IN_FLIGHT),
-    swapChainExtent(swapChainExtent)
+    swapChainExtent(swapChainExtent),
+	msaaSamples(msaaSamples),
+	swapChainImageFormat(swapChainImageFormat)
     {}
 
 VkVertexInputBindingDescription Vertex::getBindingDescription() {
@@ -311,7 +315,8 @@ void VulkanResource::createDepthResources(VkExtent2D swapChainExtent) {
 	createImage(
 		swapChainExtent.width,
 		swapChainExtent.height,
-		1, 
+		1,
+		msaaSamples,
 		depthFormat, 
 		VK_IMAGE_TILING_OPTIMAL,
 		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
@@ -377,6 +382,10 @@ void VulkanResource::loadModel() {
 	}
 
 
+	std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+
+
+
    	for (const auto& shape : shapes) {
 		for (const auto& index : shape.mesh.indices) {
 			Vertex vertex{};
@@ -386,8 +395,6 @@ void VulkanResource::loadModel() {
 				attrib.vertices[3 * index.vertex_index + 2]
 			};
 
-
-            //vertex.texCoord = {0.0f, 1.0f};
 			vertex.texCoord = {
 				attrib.texcoords[2 * index.texcoord_index + 0],
 				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
@@ -395,12 +402,12 @@ void VulkanResource::loadModel() {
 			
 			vertex.color = { .5f, .5f, .5f };
 			
-			// if (uniqueVertices.count(vertex) == 0) {
-			// 	uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+			if (uniqueVertices.count(vertex) == 0) {
+				uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
 			vertices.push_back(vertex);
-			// }
+			}
 
-			indices.push_back(indices.size());
+			indices.push_back(uniqueVertices[vertex]);
 		}
 	}
 
@@ -442,6 +449,7 @@ void VulkanResource::createTextureImage() {
         texWidth,
         texHeight,
 		mipLevels,
+		VK_SAMPLE_COUNT_1_BIT,
         VK_FORMAT_R8G8B8A8_SRGB,
         VK_IMAGE_TILING_OPTIMAL,
         VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
@@ -557,7 +565,7 @@ void VulkanResource::generateMipmaps(VkDevice device, VkImage image, VkFormat im
 		blit.dstOffsets[0] = {0, 0, 0};
 		blit.dstOffsets[1] = { mipWidth > 1 ? mipWidth / 2 : 1, mipHeight > 1 ? mipHeight / 2 : 1, 1 };
 		blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		blit.dstSubresource.mipLevel = 1;
+		blit.dstSubresource.mipLevel = i;
 		blit.dstSubresource.baseArrayLayer = 0;
 		blit.dstSubresource.layerCount = 1;
 
@@ -638,14 +646,39 @@ void VulkanResource::createTextureSampler() {
 	samplerInfo.compareEnable = VK_FALSE; // this is mainly used for percentage-closer filtering on shadow maps.
 	samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS; 
 	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+	samplerInfo.minLod = 0.0f; //static_cast<float>(mipLevels / 2);
+	samplerInfo.maxLod = VK_LOD_CLAMP_NONE;
 	samplerInfo.mipLodBias = 0.0f;
-	samplerInfo.minLod = 0.0f;
-	samplerInfo.maxLod = 0.0f;
+
 
 	if (vkCreateSampler(device, &samplerInfo, nullptr, &textureSampler) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create texture sampler!");
 	}
 
+}
+
+
+void VulkanResource::createColorResources(VkExtent2D swapChainExtent) {
+
+	VkFormat colorFormat = swapChainImageFormat;
+
+	createImage(
+		swapChainExtent.width,
+		swapChainExtent.height,
+		1,
+		msaaSamples,
+		colorFormat,
+		VK_IMAGE_TILING_OPTIMAL,
+		VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		colorImage,
+		colorImageMemory,
+		device,
+		physicalDevice
+	);
+
+
+	colorImageView = createImageView(colorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1, device); 
 }
 
 
@@ -662,10 +695,14 @@ void VulkanResource::cleanupResources() {
     vkDestroyImage(device, textureImage, nullptr);
     vkFreeMemory(device, textureImageMemory, nullptr);
     vkDestroyImageView(device, textureImageView, nullptr);
-    
+
     vkDestroyImage(device, depthImage, nullptr);
     vkFreeMemory(device, depthImageMemory, nullptr);
     vkDestroyImageView(device, depthImageView, nullptr);
+
+	vkDestroyImageView(device, colorImageView, nullptr);
+	vkDestroyImage(device, colorImage, nullptr);
+	vkFreeMemory(device, colorImageMemory, nullptr);
 
     vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 

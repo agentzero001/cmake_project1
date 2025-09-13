@@ -26,9 +26,9 @@ class VulkanSwapChain {
         );
 
         void createSwapChain();
-        void recreateSwapChain(VkRenderPass renderPass, VkImageView depthImageView);
+        //void recreateSwapChain(VkRenderPass renderPass, VkImageView depthImageView);
         void createImageViews();
-        void createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView);
+        void createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView, VkImageView colorImageView);
         void cleanupSwapChain();
         
         VkSwapchainKHR getswapChain() const { return swapChain; };

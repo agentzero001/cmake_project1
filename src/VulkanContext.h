@@ -55,6 +55,7 @@ class VulkanContext {
         VkDevice device;
         VkPhysicalDevice physicalDevice;
         VkFormat swapChainImageFormat;
+        VkSampleCountFlagBits msaaSamples;
         
         
 

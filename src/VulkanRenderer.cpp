@@ -18,6 +18,7 @@ VulkanRenderer::VulkanRenderer(
 	std::vector<void*> uniformBuffersMapped,
 	std::vector<VkDescriptorSet> descriptorSets,
 	VkImageView depthImageView,
+	VkImageView colorImageView,
 	std::vector<Vertex> vertices,
 	std::vector<uint32_t> indices,
 	VkDevice device,
@@ -42,7 +43,8 @@ VulkanRenderer::VulkanRenderer(
 	uniformBuffersMapped(uniformBuffersMapped),
 	descriptorSets(descriptorSets),
 	pipelineLayout(pipelineLayout),
-	_depthImageView(depthImageView)
+	_depthImageView(depthImageView),
+	_colorImageView(colorImageView)
 	{}
 
 
@@ -63,10 +65,12 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	renderPassInfo.renderArea.offset = {0, 0};
 	renderPassInfo.renderArea.extent = swapChainExtent; //m_swapChain->swapChainExtent;
 
-	std::array<VkClearValue, 2> clearValues{};
+	std::array<VkClearValue, 3> clearValues{};
 
 	clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
 	clearValues[1].depthStencil = { 1.0f, 0 };
+	clearValues[2].color = {0.0f, 0.0f, 0.0f, 1.0f};
+
 
 	
 	renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
@@ -231,7 +235,7 @@ void VulkanRenderer::updateUniformBuffer(uint32_t currentImage) {
 
 	ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(sin(4 * (float)time) * 2, sin((float)time) * 4, cos((4 * (float)time)) * 2 ));
 	//ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -0.5f));
-	ubo.model *= glm::rotate(glm::mat4(1.0f), 2 * time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.model *= glm::rotate(glm::mat4(1.0f), 20 * time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	ubo.model *= glm::rotate(glm::mat4(1.0f), 10 * time * glm::radians(10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	ubo.model *= glm::rotate(glm::mat4(1.0f), 4 * time * glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -253,12 +257,14 @@ void VulkanRenderer::updateSwapChainResources(
 		VkSwapchainKHR newSwapChain,
 		std::vector<VkFramebuffer> newSwapChainFramebuffers,
 		VkExtent2D newSwapChainExtent,
-		VkImageView depthImageView
+		VkImageView depthImageView,
+		VkImageView colorImageView
 	) {
 	swapChain = newSwapChain;
 	swapChainFramebuffers = newSwapChainFramebuffers;
 	swapChainExtent = newSwapChainExtent;
 	_depthImageView = depthImageView;
+	_colorImageView = colorImageView;
 
 }
 

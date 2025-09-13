@@ -2,6 +2,8 @@
 
 //#define TINYOBJLOADER_IMPLEMENTATION
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <vulkan/vulkan.h>
 #include <iostream>
 #include <vector>
@@ -10,6 +12,8 @@
 #include <tiny_obj_loader.h>
 #include <stb_image.h>
 #include <cmath>
+#include <unordered_map>
+#include <glm/gtx/hash.hpp>
 
 
 
@@ -19,6 +23,11 @@ inline std::string MODEL_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/model
 inline std::string TEXTURE_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/textures/viking_room.png";
 
 struct Vertex {
+    bool operator==(const Vertex& other) const {
+        return pos == other.pos && color == other.color && texCoord == other.texCoord;
+    }
+
+
     glm::vec3 pos;
     glm::vec3 color;
     glm::vec2 texCoord;
@@ -26,6 +35,17 @@ struct Vertex {
     static VkVertexInputBindingDescription getBindingDescription();
     static std::array<VkVertexInputAttributeDescription, 3>  getAttributeDescriptions();
 };
+
+
+namespace std {
+    template<> struct hash<Vertex> {
+        size_t operator()(Vertex const& vertex) const {
+			return ((hash<glm::vec3>()(vertex.pos) 
+				^ (hash<glm::vec3>()(vertex.color) << 1)) >> 1) 
+				^ (hash<glm::vec2>()(vertex.texCoord) << 1);
+		}
+    };
+}
 
 struct UniformBufferObject {
     alignas(16) glm::mat4 model;
@@ -44,6 +64,8 @@ class VulkanResource {
             VkCommandPool commandPool,
             VkQueue graphicsQueue,
             VkExtent2D swapChainExtent,
+            VkSampleCountFlagBits msaaSamples,
+            VkFormat swapChainImageFormat,
             int FRAMES_IN_FLIGHT
         );
 
@@ -56,6 +78,7 @@ class VulkanResource {
         void createUniformBuffers();
         void createDescriptorPool();
         void createDescriptorSets();
+        void createColorResources(VkExtent2D swapChainExtent);
         void createDepthResources(VkExtent2D swapChainExtent);
         void cleanupResources();
         VkBuffer getVertexBuffer() const { return vertexBuffer; };
@@ -64,13 +87,13 @@ class VulkanResource {
         std::vector<void*> getUniformBuffersMapped() const { return uniformBuffersMapped; };
         std::vector<VkDescriptorSet> getDescriptorSets() const {return descriptorSets; };
         VkImageView getDepthImageView() const { return depthImageView; };
+        VkImageView getColorImageView() const { return colorImageView; };
+
 
         std::vector<Vertex> getVertices() const {return vertices; };
         std::vector<uint32_t> getIndices() const {return indices; };
 
         void loadModel();
-
-
 
     
     private:
@@ -80,6 +103,8 @@ class VulkanResource {
         VkDeviceMemory vertexBufferMemory;
         VkBuffer indexBuffer;
         VkDeviceMemory indexBufferMemory;
+
+        VkFormat swapChainImageFormat;
 
         VkDescriptorSetLayout descriptorSetLayout;
 
@@ -109,12 +134,17 @@ class VulkanResource {
         VkImageView textureImageView;
         VkSampler textureSampler;
 
+        VkSampleCountFlagBits msaaSamples;
 
-
+        VkImage colorImage;
+        VkDeviceMemory colorImageMemory;
+        VkImageView colorImageView;
+        
         int FRAMES_IN_FLIGHT;
 
         void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
         //uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
         void generateMipmaps(VkDevice device, VkImage image, VkFormat imageFormat, uint32_t texWidth, uint32_t texHeight, uint32_t mipLevels,  VkCommandPool commandPool, VkQueue graphicsQueue);
+        // VkSampleCountFlagBits getMaxUsableSampleCount();
 };

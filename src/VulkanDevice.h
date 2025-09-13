@@ -40,6 +40,7 @@ class VulkanDevice {
         VkQueue getGraphicsQueue() const { return graphicsQueue; };
         VkQueue getPresentQueue() const { return presentQueue; };       
         VkCommandPool getCommandPool() const { return commandPool; }; 
+        VkSampleCountFlagBits getMsaaSamples() const {return msaaSamples; };
 
     private:
         VkInstance instance;
@@ -52,7 +53,10 @@ class VulkanDevice {
         VkCommandPool commandPool;
         std::vector<VkCommandBuffer> commandBuffers;
 
+        VkSampleCountFlagBits msaaSamples = VK_SAMPLE_COUNT_1_BIT;
+
         bool isDeviceSuitable(VkPhysicalDevice physicalDevice);
         bool checkDeviceExtensionSupport(VkPhysicalDevice physicalDevice);
+        VkSampleCountFlagBits getMaxUsableSampleCount();
 
 };

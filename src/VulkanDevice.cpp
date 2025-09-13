@@ -32,6 +32,7 @@ void VulkanDevice::pickPhysicalDevice() {
     for (const auto& device : devices) {
         if (isDeviceSuitable(device)) {
             physicalDevice = device;
+            msaaSamples = getMaxUsableSampleCount();
         }
     }
 
@@ -190,6 +191,25 @@ void VulkanDevice::createCommandBuffers(int size) {
 // 		throw std::runtime_error("failed to begin recording command buffer!");
 // 	}
 //}
+
+
+VkSampleCountFlagBits VulkanDevice::getMaxUsableSampleCount() {
+	
+	VkPhysicalDeviceProperties properties{};
+	vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+
+	VkSampleCountFlags counts = properties.limits.framebufferColorSampleCounts & properties.limits.framebufferDepthSampleCounts;
+
+	if (counts & VK_SAMPLE_COUNT_64_BIT) {return VK_SAMPLE_COUNT_64_BIT; };
+	if (counts & VK_SAMPLE_COUNT_32_BIT) {return VK_SAMPLE_COUNT_32_BIT; };
+	if (counts & VK_SAMPLE_COUNT_16_BIT) {return VK_SAMPLE_COUNT_16_BIT; };
+	if (counts & VK_SAMPLE_COUNT_8_BIT) {return VK_SAMPLE_COUNT_8_BIT; };
+	if (counts & VK_SAMPLE_COUNT_4_BIT) {return VK_SAMPLE_COUNT_4_BIT; };
+	if (counts & VK_SAMPLE_COUNT_2_BIT) {return VK_SAMPLE_COUNT_2_BIT; };
+
+	return VK_SAMPLE_COUNT_1_BIT;
+
+}
 
 
 

@@ -26,6 +26,7 @@ class VulkanRenderer {
             std::vector<void*> uniformBuffersMapped,
             std::vector<VkDescriptorSet> descriptorSets,
             VkImageView depthImageView,
+            VkImageView colorImageView,
             std::vector<Vertex> vertices,
             std::vector<uint32_t> indices,
             VkDevice device,
@@ -39,7 +40,8 @@ class VulkanRenderer {
             VkSwapchainKHR swapChain,
             std::vector<VkFramebuffer> newSwapChainFramebuffers,
             VkExtent2D newSwapChainExtent, 
-            VkImageView depthImageView
+            VkImageView depthImageView,
+            VkImageView colorImageView
         );
 
         void cleanup();
@@ -75,6 +77,7 @@ class VulkanRenderer {
         std::vector<VkDescriptorSet> descriptorSets;
         VkPipelineLayout pipelineLayout;
         VkImageView _depthImageView;
+        VkImageView _colorImageView;
 
 
         void updateUniformBuffer(uint32_t currentFrame);

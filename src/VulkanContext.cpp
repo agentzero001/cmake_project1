@@ -124,6 +124,8 @@ void VulkanContext::setupDevice() {
 
     physicalDevice = m_VulkanDevice->getPhysicalDevice();
     device = m_VulkanDevice->getDevice();
+
+    msaaSamples = m_VulkanDevice->getMsaaSamples();
     
 }
 
@@ -151,6 +153,8 @@ void VulkanContext::setupResourceBuffers() {
         m_VulkanDevice->getCommandPool(),
         m_VulkanDevice->getGraphicsQueue(),
         m_SwapChain->getSwapChainExtent(),
+        msaaSamples,
+        swapChainImageFormat,
         MAX_FRAMES_IN_FLIGHT
     );
 
@@ -164,16 +168,24 @@ void VulkanContext::setupResourceBuffers() {
     m_Resource->createUniformBuffers();
     m_Resource->createDescriptorPool();
     m_Resource->createDescriptorSets();
+    m_Resource->createColorResources(m_SwapChain->getSwapChainExtent());
     m_Resource->createDepthResources(m_SwapChain->getSwapChainExtent());
     
     
 }
 
 void VulkanContext::setupPipeline() {
-    m_Pipeline = new VulkanPipeline(device, physicalDevice, swapChainImageFormat, m_Resource->getDescriptorSetLayout());
+    m_Pipeline = new VulkanPipeline(
+        device,
+        physicalDevice,
+        swapChainImageFormat,
+        m_Resource->getDescriptorSetLayout(),
+        msaaSamples
+    );
+
     m_Pipeline->createRenderPass();
     m_Pipeline->createGraphicsPipeline();
-    m_SwapChain->createFramebuffers(m_Pipeline->getRenderPass(), m_Resource->getDepthImageView());
+    m_SwapChain->createFramebuffers(m_Pipeline->getRenderPass(), m_Resource->getDepthImageView(), m_Resource->getColorImageView());
     
 }
 
@@ -194,6 +206,7 @@ void VulkanContext::setupRenderer() {
         m_Resource->getUniformBuffersMapped(),
         m_Resource->getDescriptorSets(),
         m_Resource->getDepthImageView(),
+        m_Resource->getColorImageView(),
         m_Resource->getVertices(),
         m_Resource->getIndices(),
         device,
@@ -222,12 +235,13 @@ std::vector<const char*> VulkanContext::getRequiredExtenstions() {
 
 void VulkanContext::updateSwapChain() {
     recreateSwapChain(m_Pipeline->getRenderPass());
-    m_Renderer->updateSwapChainResources(m_SwapChain->getswapChain(), m_SwapChain->getSwapChainFrameBuffers(), m_SwapChain->getSwapChainExtent(), m_Resource->getDepthImageView());
+    m_Renderer->updateSwapChainResources(m_SwapChain->getswapChain(), m_SwapChain->getSwapChainFrameBuffers(), m_SwapChain->getSwapChainExtent(), m_Resource->getDepthImageView(), m_Resource->getColorImageView());
 }
 
 
 void VulkanContext::recreateSwapChain(VkRenderPass renderPass) {
 
+    //apparently a bunch of resources still need to be cleaned up after this is being called
 
     QueueFamilyIndices q_indices = m_VulkanDevice->getIndices();
 	int width = 0, height = 0;
@@ -251,10 +265,16 @@ void VulkanContext::recreateSwapChain(VkRenderPass renderPass) {
 
     m_SwapChain->createImageViews();
 
+    m_Resource->createColorResources(m_SwapChain->getSwapChainExtent());
+
     m_Resource->createDepthResources(m_SwapChain->getSwapChainExtent());
 
+    
+
     VkImageView depthImageView = m_Resource->getDepthImageView();
-	m_SwapChain->createFramebuffers(renderPass, depthImageView);
+    VkImageView colorImageView = m_Resource->getColorImageView();
+
+	m_SwapChain->createFramebuffers(renderPass, depthImageView, colorImageView);
 	
 }
 
