@@ -44,9 +44,11 @@ class VulkanPipeline {
 		void createComputePipeline();
 		void cleanupPipeline();
 		void createRenderPass();
-		VkPipeline getPipeline() const { return graphicsPipeline; };
+		VkPipeline getGraphicsPipeline() const { return graphicsPipeline; };
+		VkPipeline getComputePipeline() const { return computePipeline; };
 		VkRenderPass getRenderPass() const { return renderPass; };
 		VkPipelineLayout getPipelineLayout() const { return pipelineLayout; };
+		VkPipelineLayout getComputePipelineLayout() const { return computePipelineLayout; };
 
 	private:
         VkDevice device; 

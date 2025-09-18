@@ -104,6 +104,7 @@ class VulkanResource {
 
         std::vector<void*> getUniformBuffersMapped() const { return uniformBuffersMapped; };
         std::vector<VkDescriptorSet> getDescriptorSets() const {return descriptorSets; };
+        std::vector<VkDescriptorSet> getComputeDescriptorSets() const {return computeDescriptorSets; };
         VkImageView getDepthImageView() const { return depthImageView; };
         VkImageView getColorImageView() const { return colorImageView; };
 

@@ -167,9 +167,12 @@ void VulkanContext::setupResourceBuffers() {
     m_Resource->createVertexBuffer();
     m_Resource->createIndexBuffer();
     m_Resource->createDescriptorSetLayout();
+    m_Resource->createComputeDescriptorSetLayout();
     m_Resource->createUniformBuffers();
     m_Resource->createDescriptorPool();
+    //m_Resource->createComputeDescriptorPool();
     m_Resource->createDescriptorSets();
+    //m_Resource->createComputeDescriptorSets();
     m_Resource->createColorResources(m_SwapChain->getSwapChainExtent());
     m_Resource->createDepthResources(m_SwapChain->getSwapChainExtent());
     
@@ -188,6 +191,7 @@ void VulkanContext::setupPipeline() {
 
     m_Pipeline->createRenderPass();
     m_Pipeline->createGraphicsPipeline();
+    //m_Pipeline->createComputePipeline();
     m_SwapChain->createFramebuffers(m_Pipeline->getRenderPass(), m_Resource->getDepthImageView(), m_Resource->getColorImageView());
     
 }
@@ -198,16 +202,20 @@ void VulkanContext::setupRenderer() {
         m_VulkanDevice->getCommandBuffers(),
         m_VulkanDevice->getGraphicsQueue(),
         m_VulkanDevice->getPresentQueue(),
+        m_VulkanDevice->getComquteQueue(),
         m_SwapChain->getSwapChainExtent(),
         m_SwapChain->getSwapChainFrameBuffers(),
         m_SwapChain->getswapChain(),
         m_Pipeline->getRenderPass(),
-        m_Pipeline->getPipeline(),
+        m_Pipeline->getGraphicsPipeline(),
+        m_Pipeline->getComputePipeline(),
         m_Pipeline->getPipelineLayout(),
+        m_Pipeline->getComputePipelineLayout(),
         m_Resource->getVertexBuffer(),
         m_Resource->getIndexBuffer(),
         m_Resource->getUniformBuffersMapped(),
         m_Resource->getDescriptorSets(),
+        m_Resource->getComputeDescriptorSets(),
         m_Resource->getDepthImageView(),
         m_Resource->getColorImageView(),
         m_Resource->getVertices(),

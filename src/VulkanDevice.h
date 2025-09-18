@@ -40,7 +40,8 @@ class VulkanDevice {
         QueueFamilyIndices getIndices() const { return m_indices; };
         std::vector<VkCommandBuffer> getCommandBuffers() const { return commandBuffers; };
         VkQueue getGraphicsQueue() const { return graphicsQueue; };
-        VkQueue getPresentQueue() const { return presentQueue; };       
+        VkQueue getPresentQueue() const { return presentQueue; };  
+        VkQueue getComquteQueue() const { return computeQueue; };       
         VkCommandPool getCommandPool() const { return commandPool; }; 
         VkSampleCountFlagBits getMsaaSamples() const {return msaaSamples; };
 

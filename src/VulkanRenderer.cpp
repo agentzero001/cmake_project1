@@ -7,16 +7,20 @@ VulkanRenderer::VulkanRenderer(
 	std::vector<VkCommandBuffer> commandBuffers,
 	VkQueue graphicsQueue,
 	VkQueue presentQueue,
+	VkQueue computeQueue,
 	VkExtent2D swapChainExtent,
 	std::vector<VkFramebuffer> swapChainFramebuffers,
 	VkSwapchainKHR swapChain,
 	VkRenderPass renderPass,
 	VkPipeline graphicsPipeline,
+	VkPipeline computePipeline,
 	VkPipelineLayout pipelineLayout,
+	VkPipelineLayout computePipelineLayout,
 	VkBuffer vertexBuffer,
 	VkBuffer indexBuffer,
 	std::vector<void*> uniformBuffersMapped,
 	std::vector<VkDescriptorSet> descriptorSets,
+	std::vector<VkDescriptorSet> computeDescriptorSets,
 	VkImageView depthImageView,
 	VkImageView colorImageView,
 	std::vector<Vertex> vertices,
@@ -47,7 +51,12 @@ VulkanRenderer::VulkanRenderer(
 	_depthImageView(depthImageView),
 	_colorImageView(colorImageView),
 	_window(_window),
-	keyboardhandler(_window)
+	keyboardhandler(_window),
+	computePipeline(computePipeline),
+	computePipelineLayout(computePipelineLayout),
+	computeDescriptorSets(computeDescriptorSets),
+	computeQueue(computeQueue)
+
 	{}
 
 
@@ -126,11 +135,44 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 
 }
 
+void VulkanRenderer::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
+	VkCommandBufferBeginInfo beginInfo{};
+	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+
+	if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+		throw std::runtime_error("failed to begin recording command buffer!");
+	}
+
+	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
+
+	vkCmdBindDescriptorSets(
+		commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSets[currentFrame], 0, 0
+	);
+
+	vkCmdDispatch(commandBuffer, PARTICLE_COUNT / 256, 1, 1);
+
+	if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+		throw std::runtime_error("failed to record command buffer!");
+	}
+
+}
+
 
 void VulkanRenderer::drawFrame() {
+
+	// VkSubmitInfo submitInfo{};
+	// submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+	//Compute submission
+	//vkWaitForFences(device, );
+	// if (vkQueueSubmit(computeQueue, 1, &submitInfo, nullptr) != VK_SUCCESS) {
+	// 	throw std::runtime_error("failed to submit draw command buffer!");
+	// }
+
 	//the vkWaitForFences function takes an array of fences and waits on the host for either any or all of the fences to be signaled before returning.
-	//the function also has a timeout parameter.
-    vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+	//the function also has a timeout parameter.	
+	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 	
 	uint32_t imageIndex;
 	VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);

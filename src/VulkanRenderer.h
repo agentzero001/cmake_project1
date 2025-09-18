@@ -16,16 +16,20 @@ class VulkanRenderer {
             std::vector<VkCommandBuffer> commandBuffers,
             VkQueue graphicsQueue,
             VkQueue presentQueue,
+            VkQueue computeQueue,
             VkExtent2D swapChainExtent,
             std::vector<VkFramebuffer> swapChainFramebuffers,
             VkSwapchainKHR swapChain,
             VkRenderPass renderPass,
             VkPipeline graphicsPipeline,
+            VkPipeline computePipeline,
             VkPipelineLayout pipelineLayout,
+            VkPipelineLayout computePipelineLayout,
             VkBuffer vertexBuffer,
             VkBuffer indexBuffer,
             std::vector<void*> uniformBuffersMapped,
             std::vector<VkDescriptorSet> descriptorSets,
+            std::vector<VkDescriptorSet> computeDescriptorSets,
             VkImageView depthImageView,
             VkImageView colorImageView,
             std::vector<Vertex> vertices,
@@ -35,7 +39,6 @@ class VulkanRenderer {
             GLFWwindow* _window
         ); 
 
-        void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void createSyncObjects();
         void drawFrame();
         void updateSwapChainResources(
@@ -57,10 +60,15 @@ class VulkanRenderer {
         std::vector<VkCommandBuffer> commandBuffers;
         VkRenderPass renderPass;
         std::vector<VkFramebuffer> swapChainFramebuffers;
+        
         VkPipeline graphicsPipeline;
+        VkPipeline computePipeline;
+
         VkSwapchainKHR swapChain;
         VkQueue graphicsQueue;
         VkQueue presentQueue;
+        VkQueue computeQueue;
+
         VkBuffer vertexBuffer;
         VkBuffer indexBuffer;
         VkDevice device;
@@ -77,7 +85,12 @@ class VulkanRenderer {
         std::vector<void*> uniformBuffersMapped;
 
         std::vector<VkDescriptorSet> descriptorSets;
+        std::vector<VkDescriptorSet> computeDescriptorSets;
+
         VkPipelineLayout pipelineLayout;
+        VkPipelineLayout computePipelineLayout;
+
+
         VkImageView _depthImageView;
         VkImageView _colorImageView;
 
@@ -98,6 +111,8 @@ class VulkanRenderer {
         float cameraSpeed = 0.002f;
 
         void updateUniformBuffer(uint32_t currentFrame,  KeyboardHandler& keyboardHandler);
+        void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+        void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
 
         
         
