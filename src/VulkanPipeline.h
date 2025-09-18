@@ -37,9 +37,11 @@ class VulkanPipeline {
 			VkPhysicalDevice physicalDevice,
 			VkFormat swapChainImageFormat,
 			VkDescriptorSetLayout descriptorSetLayout,
+			VkDescriptorSetLayout computeDescriptorSetLayout,
 			VkSampleCountFlagBits msaaSamples
 		);
         void createGraphicsPipeline();
+		void createComputePipeline();
 		void cleanupPipeline();
 		void createRenderPass();
 		VkPipeline getPipeline() const { return graphicsPipeline; };
@@ -51,9 +53,12 @@ class VulkanPipeline {
 		VkPhysicalDevice physicalDevice;
 		VkFormat swapChainImageFormat;
 		VkPipelineLayout pipelineLayout;
+		VkPipelineLayout computePipelineLayout;
 		VkRenderPass renderPass;
 		VkPipeline graphicsPipeline;
+		VkPipeline computePipeline;
 		VkDescriptorSetLayout descriptorSetLayout;
+		VkDescriptorSetLayout computeDescriptorSetLayout;
 		VkSampleCountFlagBits msaaSamples;
 		
         VkShaderModule createShaderModule(const std::vector<char>& code);

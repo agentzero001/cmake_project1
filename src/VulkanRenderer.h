@@ -3,6 +3,7 @@
 #include <iostream>
 #include <chrono>
 #include "VulkanResource.h"
+#include "keyboard.h"
 
 
 class VulkanContext;  // Forward declaration — no include needed
@@ -30,7 +31,8 @@ class VulkanRenderer {
             std::vector<Vertex> vertices,
             std::vector<uint32_t> indices,
             VkDevice device,
-            int framesInFlight
+            int framesInFlight,
+            GLFWwindow* _window
         ); 
 
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
@@ -79,8 +81,23 @@ class VulkanRenderer {
         VkImageView _depthImageView;
         VkImageView _colorImageView;
 
+        GLFWwindow* _window;
 
-        void updateUniformBuffer(uint32_t currentFrame);
+        KeyboardHandler keyboardhandler;
+
+        float cameraX = 0.0f;
+	    float cameraY = 0.0f;
+	    float cameraZ = -2.0f;
+
+        glm::vec3 forward = glm::vec3(1.0f, 0.0f, 0.0f);
+        glm::vec3 cameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
+        //glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
+
+        
+
+        float cameraSpeed = 0.002f;
+
+        void updateUniformBuffer(uint32_t currentFrame,  KeyboardHandler& keyboardHandler);
 
         
         

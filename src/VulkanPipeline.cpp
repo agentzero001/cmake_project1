@@ -7,11 +7,13 @@ VulkanPipeline::VulkanPipeline(
     VkPhysicalDevice physicalDevice,
     VkFormat swapChainImageFormat,
     VkDescriptorSetLayout descriptorSetLayout,
+    VkDescriptorSetLayout computeDescriptorSetLayout,
     VkSampleCountFlagBits msaaSamples
 ) : 
     device(device),
     swapChainImageFormat(swapChainImageFormat),
     descriptorSetLayout(descriptorSetLayout),
+    computeDescriptorSetLayout(computeDescriptorSetLayout),
     msaaSamples(msaaSamples)
     {}
 
@@ -21,8 +23,8 @@ void VulkanPipeline::createGraphicsPipeline() {
     auto vertShaderCode = readFile("C:/Users/jensm/Desktop/cmake_project1/res/shaders/vert.spv");
     auto fragShaderCode = readFile("C:/Users/jensm/Desktop/cmake_project1/res/shaders/frag.spv");
 
-    VkShaderModule vertShaderModule = VulkanPipeline::createShaderModule(vertShaderCode);
-	VkShaderModule fragShaderModule = VulkanPipeline::createShaderModule(fragShaderCode);
+    VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
+	VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -103,6 +105,8 @@ void VulkanPipeline::createGraphicsPipeline() {
     multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     multisampling.sampleShadingEnable = VK_FALSE;
     multisampling.rasterizationSamples = msaaSamples;
+    multisampling.sampleShadingEnable = VK_TRUE;
+    multisampling.minSampleShading = .2f;
     
 
    	VkPipelineDepthStencilStateCreateInfo depthStencil{};
@@ -178,6 +182,40 @@ void VulkanPipeline::createGraphicsPipeline() {
     vkDestroyShaderModule(device, fragShaderModule, nullptr);
 	vkDestroyShaderModule(device, vertShaderModule, nullptr);    
 }
+
+void VulkanPipeline::createComputePipeline() {
+    auto computeShaderCode = readFile("C:/Users/jensm/Desktop/cmake_project1/res/shaders/vert.spv");
+    
+    VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
+
+
+    VkPipelineShaderStageCreateInfo computeShaderStageInfo{};
+	computeShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	computeShaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+	computeShaderStageInfo.module = computeShaderModule;
+	computeShaderStageInfo.pName = "main";
+    computeShaderStageInfo.pSpecializationInfo = nullptr;
+
+    VkPipelineLayoutCreateInfo computePipelineLayoutInfo{};
+    computePipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    computePipelineLayoutInfo.setLayoutCount = 1;
+    computePipelineLayoutInfo.pSetLayouts = &computeDescriptorSetLayout;
+    //pipelineLayoutInfo.pushConstantRangeCount = 0;
+
+    if (vkCreatePipelineLayout(device, &computePipelineLayoutInfo, nullptr, &computePipelineLayout) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create pipeline layout!");
+    }
+
+
+    VkComputePipelineCreateInfo pipelineInfo{};
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+    pipelineInfo.layout = computePipelineLayout;
+    pipelineInfo.stage = computeShaderStageInfo;
+
+    if (vkCreateComputePipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &computePipeline) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create compute pipeline!");
+    }
+} 
 
 
 VkShaderModule VulkanPipeline::createShaderModule(const std::vector<char>& code) {

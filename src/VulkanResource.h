@@ -14,13 +14,13 @@
 #include <cmath>
 #include <unordered_map>
 #include <glm/gtx/hash.hpp>
-
-
-
+#include <random>
 
 inline std::string MODEL_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/models/viking_room.obj";
-
 inline std::string TEXTURE_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/textures/viking_room.png";
+
+
+const uint32_t PARTICLE_COUNT = 4096;
 
 struct Vertex {
     bool operator==(const Vertex& other) const {
@@ -46,6 +46,18 @@ namespace std {
 		}
     };
 }
+
+
+struct Particle {
+    glm::vec2 pos;
+    glm::vec2 velocity;
+    glm::vec4 color;
+
+    static VkVertexInputBindingDescription getBindingDescription();
+
+};
+
+
 
 struct UniformBufferObject {
     alignas(16) glm::mat4 model;
@@ -75,15 +87,21 @@ class VulkanResource {
         void createVertexBuffer();
         void createIndexBuffer();
         void createDescriptorSetLayout();
+        void createComputeDescriptorSetLayout();
         void createUniformBuffers();
+        void createShaderStorageBuffers();
         void createDescriptorPool();
+        void createComputeDescriptorPool();
         void createDescriptorSets();
+        void createComputeDescriptorSets();
         void createColorResources(VkExtent2D swapChainExtent);
         void createDepthResources(VkExtent2D swapChainExtent);
         void cleanupResources();
         VkBuffer getVertexBuffer() const { return vertexBuffer; };
         VkBuffer getIndexBuffer() const { return indexBuffer; };
         VkDescriptorSetLayout getDescriptorSetLayout() const { return descriptorSetLayout; }; 
+        VkDescriptorSetLayout getComputeDescriptorSetLayout() const { return computeDescriptorSetLayout; }; 
+
         std::vector<void*> getUniformBuffersMapped() const { return uniformBuffersMapped; };
         std::vector<VkDescriptorSet> getDescriptorSets() const {return descriptorSets; };
         VkImageView getDepthImageView() const { return depthImageView; };
@@ -107,13 +125,21 @@ class VulkanResource {
         VkFormat swapChainImageFormat;
 
         VkDescriptorSetLayout descriptorSetLayout;
+        VkDescriptorSetLayout computeDescriptorSetLayout;
 
         std::vector<VkBuffer> uniformBuffers;
         std::vector<VkDeviceMemory> uniformBuffersMemory;
         std::vector<void*> uniformBuffersMapped;
 
+
+        std::vector<VkBuffer> shaderStorageBuffers;
+        std::vector<VkDeviceMemory> shaderStorageBuffersMemory;
+
         VkDescriptorPool descriptorPool;
         std::vector<VkDescriptorSet> descriptorSets;
+
+
+        std::vector<VkDescriptorSet> computeDescriptorSets;
 
         VkImage depthImage;
         VkDeviceMemory depthImageMemory;

@@ -1,6 +1,8 @@
 #include "VulkanContext.h"
 #include "VulkanRenderer.h"
 
+//#include <vulkan/vk_platform.h>
+
 //#include <vulkan/vulkan_raii.hpp>
 using namespace VulkanDebug;
 
@@ -180,6 +182,7 @@ void VulkanContext::setupPipeline() {
         physicalDevice,
         swapChainImageFormat,
         m_Resource->getDescriptorSetLayout(),
+        m_Resource->getComputeDescriptorSetLayout(),
         msaaSamples
     );
 
@@ -210,7 +213,8 @@ void VulkanContext::setupRenderer() {
         m_Resource->getVertices(),
         m_Resource->getIndices(),
         device,
-        MAX_FRAMES_IN_FLIGHT
+        MAX_FRAMES_IN_FLIGHT,
+        _window
         );
 
     m_Renderer->createSyncObjects();

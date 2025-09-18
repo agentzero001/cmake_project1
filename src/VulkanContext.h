@@ -17,6 +17,7 @@
 #include <vector>
 #include <set>
 #include <fstream>
+#include <vulkan/vulkan_raii.hpp>
 #include "VulkanDevice.h"
 #include "VulkanDebug.h"
 #include "VulkanSwapchain.h"
@@ -48,6 +49,8 @@ class VulkanContext {
         GLFWwindow* _window;
         VkSurfaceKHR _surface;
         VkInstance instance;
+
+
         VulkanDevice* m_VulkanDevice;
         VulkanPipeline* m_Pipeline;
         VulkanRenderer* m_Renderer;

@@ -3,7 +3,7 @@
 
 
 bool QueueFamilyIndices::isComplete() {
-    return graphicsFamily.has_value() && presentFamily.has_value();
+    return graphicsAndComputeFamily.has_value() && presentFamily.has_value();
 }
 
 
@@ -90,8 +90,8 @@ QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice physicalDevi
     int i = 0;
     for (const auto& queueFamily : queueFamilies) { 
         std::cout << std::bitset<16>(queueFamily.queueFlags) << std::endl;        
-        if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            indices.graphicsFamily = i;
+        if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) && (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)) {
+            indices.graphicsAndComputeFamily = i;
         
         VkBool32 presentSupport = false;
         vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
@@ -116,7 +116,7 @@ void VulkanDevice::createLogicalDevice() {
     float queuePriority = 1.0f;
 
     //for most dedicated hardware devices these queues end up being the same anyway
-    std::set<uint32_t> uniqueQueueFamilies = { m_indices.graphicsFamily.value(), m_indices.presentFamily.value() };  
+    std::set<uint32_t> uniqueQueueFamilies = { m_indices.graphicsAndComputeFamily.value(), m_indices.presentFamily.value() };  
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	for (uint32_t queueFamily : uniqueQueueFamilies) {
 		VkDeviceQueueCreateInfo queueCreateInfo{};
@@ -132,6 +132,7 @@ void VulkanDevice::createLogicalDevice() {
 
     VkPhysicalDeviceFeatures deviceFeatures{};
     deviceFeatures.samplerAnisotropy = VK_TRUE;
+    deviceFeatures.sampleRateShading = VK_TRUE;
 
 
     
@@ -149,7 +150,8 @@ void VulkanDevice::createLogicalDevice() {
 
     
     //so if they are the same queue these two will have the same value as well.
-    vkGetDeviceQueue(device, m_indices.graphicsFamily.value(), 0, &graphicsQueue);
+    vkGetDeviceQueue(device, m_indices.graphicsAndComputeFamily.value(), 0, &graphicsQueue);
+    vkGetDeviceQueue(device, m_indices.graphicsAndComputeFamily.value(), 0, &computeQueue);
     vkGetDeviceQueue(device, m_indices.presentFamily.value(), 0, &presentQueue);
     std::cout << graphicsQueue << presentQueue << std::endl;
     
@@ -160,7 +162,7 @@ void VulkanDevice::createCommandPool() {
 	VkCommandPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-	poolInfo.queueFamilyIndex = m_indices.graphicsFamily.value();
+	poolInfo.queueFamilyIndex = m_indices.graphicsAndComputeFamily.value();
 
 	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create command pool!");

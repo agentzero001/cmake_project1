@@ -47,6 +47,8 @@ add_executable(cmake_project1
                 src/VulkanResource.h
                 src/VulkanUtils.cpp
                 src/VulkanUtils.h
+                src/keyboard.cpp
+                src/keyboard.h
                 )
 
 target_link_libraries(cmake_project1 glfw3 vulkan-1)

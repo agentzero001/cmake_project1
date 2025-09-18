@@ -14,6 +14,8 @@ const std::vector<const char*> deviceExtensions = {
 struct QueueFamilyIndices { 
     std::optional<uint32_t> graphicsFamily;
     std::optional<uint32_t> presentFamily;
+    std::optional<uint32_t> graphicsAndComputeFamily;
+    
 
     bool isComplete();
 };
@@ -48,6 +50,7 @@ class VulkanDevice {
         VkPhysicalDevice physicalDevice;
         VkDevice device;
         VkQueue graphicsQueue;
+        VkQueue computeQueue;
         VkQueue presentQueue;
         QueueFamilyIndices m_indices;
         VkCommandPool commandPool;

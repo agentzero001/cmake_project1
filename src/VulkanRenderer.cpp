@@ -22,7 +22,8 @@ VulkanRenderer::VulkanRenderer(
 	std::vector<Vertex> vertices,
 	std::vector<uint32_t> indices,
 	VkDevice device,
-	int framesInFlight
+	int framesInFlight,
+	GLFWwindow* _window
 
 ) :
 	commandBuffers(commandBuffers),
@@ -44,8 +45,12 @@ VulkanRenderer::VulkanRenderer(
 	descriptorSets(descriptorSets),
 	pipelineLayout(pipelineLayout),
 	_depthImageView(depthImageView),
-	_colorImageView(colorImageView)
+	_colorImageView(colorImageView),
+	_window(_window),
+	keyboardhandler(_window)
 	{}
+
+
 
 
 void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
@@ -139,7 +144,7 @@ void VulkanRenderer::drawFrame() {
 		throw std::runtime_error("failed to acquire swap chain image!");
 	}
 
-	updateUniformBuffer(currentFrame);
+	updateUniformBuffer(currentFrame, VulkanRenderer::keyboardhandler);
 
 	vkResetFences(device, 1, &inFlightFences[currentFrame]);
 	vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
@@ -221,32 +226,55 @@ void VulkanRenderer::createSyncObjects() {
 
 }
 
-void VulkanRenderer::updateUniformBuffer(uint32_t currentImage) {
+void VulkanRenderer::updateUniformBuffer(uint32_t currentImage,  KeyboardHandler& keyboardHandler) {
 	static auto startTime = std::chrono::high_resolution_clock::now();
 	auto currentTime = std::chrono::high_resolution_clock::now();
 	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-	
+    
+
+
 
 	UniformBufferObject ubo{};
 
 	// float oscillation_x = std::sin(time);
 	// float oscillation_y = std::cos(time);
 
-	ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(sin(4 * (float)time) * 2, sin((float)time) * 4, cos((4 * (float)time)) * 2 ));
-	//ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -0.5f));
-	ubo.model *= glm::rotate(glm::mat4(1.0f), 20 * time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.model *= glm::rotate(glm::mat4(1.0f), 10 * time * glm::radians(10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	ubo.model *= glm::rotate(glm::mat4(1.0f), 4 * time * glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(sin(4 * (float)time) * 2, sin((float)time) * 4, cos((4 * (float)time)) * 2 ));
+	ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -0.5f));
+	ubo.model *= glm::rotate(glm::mat4(1.0f), glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	ubo.model *= glm::rotate(glm::mat4(1.0f), 3 * time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	
+	// ubo.model *= glm::rotate(glm::mat4(1.0f), 4 * time * glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 	std::cout << time << std::endl;
 	
+	
+	if (keyboardHandler.isKeyPressed(GLFW_KEY_W)) {
+        cameraZ += cameraSpeed;
+    }
+    if (keyboardHandler.isKeyPressed(GLFW_KEY_S)) {
+        cameraZ -= cameraSpeed;
+    }
+    if (keyboardHandler.isKeyPressed(GLFW_KEY_A)) {
+        cameraX += cameraSpeed;
+    }
+    if (keyboardHandler.isKeyPressed(GLFW_KEY_D)) {
+        cameraX -= cameraSpeed;
+    }
+    if (keyboardHandler.isKeyPressed(GLFW_KEY_Q)) {
+        cameraY += cameraSpeed;
+    }
+    if (keyboardHandler.isKeyPressed(GLFW_KEY_E)) {
+        cameraY -= cameraSpeed;
+    }
 
-	ubo.view = glm::lookAt(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	//ubo.view = glm::lookAt(glm::vec3(cameraX, cameraY, cameraZ), glm::vec3(0.0f + cameraX, 0.0f, 0.0f), cameraUp);
+	ubo.view = glm::translate(glm::mat4(1.0f), glm::vec3(cameraX, cameraY, cameraZ));
 	ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 30.0f);
 	ubo.proj[1][1] *= -1;
 
-	//std::cout << uniformBuffersMapped.size() << std::endl;
 
 	memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 
