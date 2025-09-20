@@ -14,6 +14,7 @@ class VulkanRenderer {
         VulkanRenderer(
             VulkanContext* context,
             std::vector<VkCommandBuffer> commandBuffers,
+            std::vector<VkCommandBuffer> computeCommandBuffers,
             VkQueue graphicsQueue,
             VkQueue presentQueue,
             VkQueue computeQueue,
@@ -27,6 +28,7 @@ class VulkanRenderer {
             VkPipelineLayout computePipelineLayout,
             VkBuffer vertexBuffer,
             VkBuffer indexBuffer,
+            std::vector<VkBuffer> shaderStorageBuffers,
             std::vector<void*> uniformBuffersMapped,
             std::vector<VkDescriptorSet> descriptorSets,
             std::vector<VkDescriptorSet> computeDescriptorSets,
@@ -58,6 +60,7 @@ class VulkanRenderer {
 
         VkExtent2D swapChainExtent;
         std::vector<VkCommandBuffer> commandBuffers;
+        std::vector<VkCommandBuffer> computeCommandBuffers;
         VkRenderPass renderPass;
         std::vector<VkFramebuffer> swapChainFramebuffers;
         
@@ -71,6 +74,8 @@ class VulkanRenderer {
 
         VkBuffer vertexBuffer;
         VkBuffer indexBuffer;
+        std::vector<VkBuffer> shaderStorageBuffers;
+        
         VkDevice device;
         std::vector<Vertex> vertices;
         std::vector<uint32_t> indices;
@@ -79,6 +84,9 @@ class VulkanRenderer {
         std::vector<VkSemaphore> imageAvailableSemaphores;
         std::vector<VkSemaphore> renderFinishedSemaphores;
         std::vector<VkFence> inFlightFences;  
+
+        std::vector<VkSemaphore> computeFinishedSemaphores;
+        std::vector<VkFence> computeInFlightFences;
         
         uint32_t currentFrame = 0;
 

@@ -5,6 +5,7 @@
 VulkanRenderer::VulkanRenderer(
 	VulkanContext* context,
 	std::vector<VkCommandBuffer> commandBuffers,
+	std::vector<VkCommandBuffer> computeCommandBuffers,
 	VkQueue graphicsQueue,
 	VkQueue presentQueue,
 	VkQueue computeQueue,
@@ -16,8 +17,10 @@ VulkanRenderer::VulkanRenderer(
 	VkPipeline computePipeline,
 	VkPipelineLayout pipelineLayout,
 	VkPipelineLayout computePipelineLayout,
+
 	VkBuffer vertexBuffer,
 	VkBuffer indexBuffer,
+	std::vector<VkBuffer> shaderStorageBuffers,
 	std::vector<void*> uniformBuffersMapped,
 	std::vector<VkDescriptorSet> descriptorSets,
 	std::vector<VkDescriptorSet> computeDescriptorSets,
@@ -31,6 +34,7 @@ VulkanRenderer::VulkanRenderer(
 
 ) :
 	commandBuffers(commandBuffers),
+	computeCommandBuffers(computeCommandBuffers),
 	swapChainExtent(swapChainExtent),
 	renderPass(renderPass),
 	swapChainFramebuffers(swapChainFramebuffers),
@@ -42,6 +46,7 @@ VulkanRenderer::VulkanRenderer(
 	indexBuffer(indexBuffer),
 	vertices(vertices),
 	indices(indices),
+	shaderStorageBuffers(shaderStorageBuffers),
 	device(device),
 	framesInFlight(framesInFlight),
 	m_context(context),
@@ -119,13 +124,13 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	//provided that their data is refreshed, of course. This is known as aliasing 
 	//and some Vulkan functions have explicit flags to specify that you want to do this.
 
-	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-	vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+	vkCmdBindVertexBuffers(commandBuffer, 0, 1, &shaderStorageBuffers[currentFrame], offsets);
+	//vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
 	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
 
-	//vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
-	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+	vkCmdDraw(commandBuffer, PARTICLE_COUNT, 1, 0, 0);
+	//vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
 
@@ -161,17 +166,29 @@ void VulkanRenderer::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
 
 void VulkanRenderer::drawFrame() {
 
-	// VkSubmitInfo submitInfo{};
-	// submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	VkSubmitInfo submitInfo{};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
 	//Compute submission
-	//vkWaitForFences(device, );
-	// if (vkQueueSubmit(computeQueue, 1, &submitInfo, nullptr) != VK_SUCCESS) {
-	// 	throw std::runtime_error("failed to submit draw command buffer!");
-	// }
+	vkWaitForFences(device, 1, &computeInFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
-	//the vkWaitForFences function takes an array of fences and waits on the host for either any or all of the fences to be signaled before returning.
-	//the function also has a timeout parameter.	
+	updateUniformBuffer(currentFrame, VulkanRenderer::keyboardhandler);
+
+	vkResetFences(device, 1, &computeInFlightFences[currentFrame]);
+	vkResetCommandBuffer(computeCommandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+	recordComputeCommandBuffer(computeCommandBuffers[currentFrame]);
+	
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &computeCommandBuffers[currentFrame];
+	submitInfo.signalSemaphoreCount = 1;
+	submitInfo.pSignalSemaphores = &computeFinishedSemaphores[currentFrame];
+	
+
+	if (vkQueueSubmit(computeQueue, 1, &submitInfo, nullptr) != VK_SUCCESS) {
+		throw std::runtime_error("failed to submit draw command buffer!");
+	}
+
+	//graphics submission
 	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 	
 	uint32_t imageIndex;
@@ -186,18 +203,18 @@ void VulkanRenderer::drawFrame() {
 		throw std::runtime_error("failed to acquire swap chain image!");
 	}
 
-	updateUniformBuffer(currentFrame, VulkanRenderer::keyboardhandler);
 
 	vkResetFences(device, 1, &inFlightFences[currentFrame]);
 	vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
 	
 	recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 
-	VkSubmitInfo submitInfo{};
+	VkSemaphore waitSemaphores[] = {computeFinishedSemaphores[currentFrame], imageAvailableSemaphores[currentFrame]};
+	VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+
+	submitInfo = VkSubmitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	VkSemaphore waitSemaphores[] = {imageAvailableSemaphores[currentFrame]};
-	VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
@@ -248,7 +265,9 @@ void VulkanRenderer::createSyncObjects() {
 	renderFinishedSemaphores.resize(framesInFlight);
 	inFlightFences.resize(framesInFlight);
 
-
+	computeInFlightFences.resize(framesInFlight);
+	computeFinishedSemaphores.resize(framesInFlight);
+	
 
 	VkSemaphoreCreateInfo semaphoreInfo{};
 	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -262,10 +281,13 @@ void VulkanRenderer::createSyncObjects() {
 		if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS
 			|| vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS
 			|| vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create semaphores!");
+			throw std::runtime_error("failed to graphics sync objects!");
+		}
+		if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &computeFinishedSemaphores[i]) != VK_SUCCESS
+			|| vkCreateFence(device, &fenceInfo, nullptr, &computeInFlightFences[i]) != VK_SUCCESS) {
+				throw std::runtime_error("failed to compute sync objects!");
 		}
 	}
-
 }
 
 void VulkanRenderer::updateUniformBuffer(uint32_t currentImage,  KeyboardHandler& keyboardHandler) {

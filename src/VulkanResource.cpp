@@ -84,6 +84,37 @@ std::array<VkVertexInputAttributeDescription, 3> Vertex::getAttributeDescription
 }
 
 
+VkVertexInputBindingDescription Particle::getBindingDescription() {
+	VkVertexInputBindingDescription bindingDescription;
+
+	bindingDescription.binding = 0; // the index of the binding in the array of bindings
+	bindingDescription.stride = sizeof(Particle); // specifies the number of bytes from one entry to the next
+	bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+	return bindingDescription;
+}
+
+
+std::array<VkVertexInputAttributeDescription, 2> Particle::getAttributeDescriptions() {
+	std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
+
+   	attributeDescriptions[0].binding = 0;
+	attributeDescriptions[0].location = 0;
+	attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT; 
+	attributeDescriptions[0].offset = offsetof(Particle, pos); //specifies the number of bytes since the start of the per-vertex data to read from.
+
+	attributeDescriptions[1].binding = 0;
+	attributeDescriptions[1].location = 1;
+	attributeDescriptions[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+	attributeDescriptions[1].offset = offsetof(Particle, color);
+
+	//note that velocity isn't added to the vertex attributes,
+	//as this is only used by the compute shader.
+	
+
+	return attributeDescriptions;
+}
+
 
 void VulkanResource::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
     VkBufferCreateInfo bufferInfo{};
@@ -243,6 +274,10 @@ void VulkanResource::createComputeDescriptorSetLayout() {
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	layoutInfo.bindingCount = static_cast<uint32_t>(layoutBindings.size());
 	layoutInfo.pBindings = layoutBindings.data();
+
+	if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &computeDescriptorSetLayout) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create compute descriptor set layout");
+	}
 
 
 }
@@ -419,7 +454,7 @@ void VulkanResource::createDescriptorSets() {
 
 
 void VulkanResource::createComputeDescriptorSets() {
-	std::vector<VkDescriptorSetLayout> layouts(FRAMES_IN_FLIGHT, descriptorSetLayout);
+	std::vector<VkDescriptorSetLayout> layouts(FRAMES_IN_FLIGHT, computeDescriptorSetLayout);
 
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;

@@ -55,6 +55,8 @@ struct Particle {
 
     static VkVertexInputBindingDescription getBindingDescription();
 
+    static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions();
+
 };
 
 
@@ -99,6 +101,7 @@ class VulkanResource {
         void cleanupResources();
         VkBuffer getVertexBuffer() const { return vertexBuffer; };
         VkBuffer getIndexBuffer() const { return indexBuffer; };
+        std::vector<VkBuffer> getShaderStorageBuffers() const {return shaderStorageBuffers; };
         VkDescriptorSetLayout getDescriptorSetLayout() const { return descriptorSetLayout; }; 
         VkDescriptorSetLayout getComputeDescriptorSetLayout() const { return computeDescriptorSetLayout; }; 
 

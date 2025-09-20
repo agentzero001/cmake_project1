@@ -30,7 +30,8 @@ class VulkanDevice {
         void createLogicalDevice();
         void createCommandPool();
         void createCommandBuffers(int size);
-        void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+        void createComputeCommandBuffers(int size);
+        //void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void cleanupDevice();
         
         static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
@@ -39,6 +40,8 @@ class VulkanDevice {
         VkPhysicalDevice getPhysicalDevice() const { return physicalDevice; };
         QueueFamilyIndices getIndices() const { return m_indices; };
         std::vector<VkCommandBuffer> getCommandBuffers() const { return commandBuffers; };
+        std::vector<VkCommandBuffer> getComputeCommandBuffers() const { return computeCommandBuffers; };
+        
         VkQueue getGraphicsQueue() const { return graphicsQueue; };
         VkQueue getPresentQueue() const { return presentQueue; };  
         VkQueue getComquteQueue() const { return computeQueue; };       
@@ -56,6 +59,7 @@ class VulkanDevice {
         QueueFamilyIndices m_indices;
         VkCommandPool commandPool;
         std::vector<VkCommandBuffer> commandBuffers;
+        std::vector<VkCommandBuffer> computeCommandBuffers;
 
         VkSampleCountFlagBits msaaSamples = VK_SAMPLE_COUNT_1_BIT;
 

@@ -184,6 +184,21 @@ void VulkanDevice::createCommandBuffers(int size) {
 
 }
 
+void VulkanDevice::createComputeCommandBuffers(int size) {
+    computeCommandBuffers.resize(size);
+
+    VkCommandBufferAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	allocInfo.commandPool = commandPool;
+	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	allocInfo.commandBufferCount = (uint32_t) computeCommandBuffers.size();
+	if (vkAllocateCommandBuffers(device, &allocInfo, computeCommandBuffers.data()) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create command buffers");
+	}
+
+}
+
+
 // void VulkanDevice::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 //     VkCommandBufferBeginInfo beginInfo{};
 //     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
