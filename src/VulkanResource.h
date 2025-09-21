@@ -20,7 +20,7 @@ inline std::string MODEL_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/model
 inline std::string TEXTURE_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/textures/viking_room.png";
 
 
-const uint32_t PARTICLE_COUNT = 4096;
+const uint32_t PARTICLE_COUNT = 4096 * 2;
 
 struct Vertex {
     bool operator==(const Vertex& other) const {
@@ -62,10 +62,13 @@ struct Particle {
 
 
 struct UniformBufferObject {
-    alignas(16) glm::mat4 model;
-    alignas(16) glm::mat4 view;
-    alignas(16) glm::mat4 proj;
+    // alignas(16) glm::mat4 model;
+    // alignas(16) glm::mat4 view;
+    // alignas(16) glm::mat4 proj;
+    float deltaTime = 1.0f;
 };
+
+
 
 
 

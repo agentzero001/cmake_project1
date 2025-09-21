@@ -26,6 +26,8 @@ void VulkanContext::initWindow() {
     _window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
     glfwSetWindowUserPointer(_window, this);
     glfwSetFramebufferSizeCallback(_window, framebufferResizeCallback);
+
+    lastTime = glfwGetTime();
 }
 
 void VulkanContext::initVulkan() {
@@ -45,7 +47,10 @@ void VulkanContext::initVulkan() {
 void VulkanContext::mainLoop() {
     while (!glfwWindowShouldClose(_window)) {
         glfwPollEvents();
-        m_Renderer->drawFrame();
+        m_Renderer->drawFrame(lastFrameTime);
+        double currentTime  = glfwGetTime();
+        lastFrameTime = (currentTime - lastTime) * 1000.0f;
+        lastTime = currentTime;
     }
     vkDeviceWaitIdle(device);
 }
@@ -161,12 +166,12 @@ void VulkanContext::setupResourceBuffers() {
         MAX_FRAMES_IN_FLIGHT
     );
 
-    m_Resource->createTextureImage();
-    m_Resource->createTextureImageView();
-    m_Resource->createTextureSampler();
-    m_Resource->loadModel();
-    m_Resource->createVertexBuffer();
-    m_Resource->createIndexBuffer();
+    // m_Resource->createTextureImage();
+    // m_Resource->createTextureImageView();
+    //m_Resource->createTextureSampler();
+    //m_Resource->loadModel();
+    //m_Resource->createVertexBuffer();
+    //m_Resource->createIndexBuffer();
     //m_Resource->createDescriptorSetLayout();
     m_Resource->createComputeDescriptorSetLayout();
     m_Resource->createShaderStorageBuffers();
@@ -176,7 +181,7 @@ void VulkanContext::setupResourceBuffers() {
     //m_Resource->createDescriptorSets();
     m_Resource->createComputeDescriptorSets();
     m_Resource->createColorResources(m_SwapChain->getSwapChainExtent());
-    m_Resource->createDepthResources(m_SwapChain->getSwapChainExtent());
+    //m_Resource->createDepthResources(m_SwapChain->getSwapChainExtent());
     
     
 }

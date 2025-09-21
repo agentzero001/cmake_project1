@@ -84,16 +84,16 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	renderPassInfo.renderArea.offset = {0, 0};
 	renderPassInfo.renderArea.extent = swapChainExtent; //m_swapChain->swapChainExtent;
 
-	std::array<VkClearValue, 3> clearValues{};
+	//std::array<VkClearValue, 3> clearValues{};
 
-	clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
-	clearValues[1].depthStencil = { 1.0f, 0 };
-	clearValues[2].color = {0.0f, 0.0f, 0.0f, 1.0f};
+	// clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+	// clearValues[1].depthStencil = { 1.0f, 0 };
+	// clearValues[2].color = {0.0f, 0.0f, 0.0f, 1.0f};
 
-
+	VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
 	
-	renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-	renderPassInfo.pClearValues = clearValues.data();
+	renderPassInfo.clearValueCount = 1; //static_cast<uint32_t>(clearValues.size());
+	renderPassInfo.pClearValues = &clearColor;//clearValues.data();
 
 
 	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
@@ -114,7 +114,7 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	scissor.extent = swapChainExtent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-	VkBuffer vertexBuffers[] = { vertexBuffer };
+	//VkBuffer vertexBuffers[] = { vertexBuffer };
 	VkDeviceSize offsets[] = { 0 };
 
 	//Driver developers recommend that you also store multiple buffers, 
@@ -127,7 +127,7 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, &shaderStorageBuffers[currentFrame], offsets);
 	//vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
+	//vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
 
 	vkCmdDraw(commandBuffer, PARTICLE_COUNT, 1, 0, 0);
 	//vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
@@ -152,7 +152,7 @@ void VulkanRenderer::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
 
 	vkCmdBindDescriptorSets(
-		commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSets[currentFrame], 0, 0
+		commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSets[currentFrame], 0, nullptr
 	);
 
 	vkCmdDispatch(commandBuffer, PARTICLE_COUNT / 256, 1, 1);
@@ -164,7 +164,7 @@ void VulkanRenderer::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
 }
 
 
-void VulkanRenderer::drawFrame() {
+void VulkanRenderer::drawFrame(float lastFrameTime) {
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -172,7 +172,7 @@ void VulkanRenderer::drawFrame() {
 	//Compute submission
 	vkWaitForFences(device, 1, &computeInFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
-	updateUniformBuffer(currentFrame, VulkanRenderer::keyboardhandler);
+	updateUniformBuffer2(currentFrame, lastFrameTime);//, VulkanRenderer::keyboardhandler);
 
 	vkResetFences(device, 1, &computeInFlightFences[currentFrame]);
 	vkResetCommandBuffer(computeCommandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
@@ -184,8 +184,8 @@ void VulkanRenderer::drawFrame() {
 	submitInfo.pSignalSemaphores = &computeFinishedSemaphores[currentFrame];
 	
 
-	if (vkQueueSubmit(computeQueue, 1, &submitInfo, nullptr) != VK_SUCCESS) {
-		throw std::runtime_error("failed to submit draw command buffer!");
+	if (vkQueueSubmit(computeQueue, 1, &submitInfo, computeInFlightFences[currentFrame]) != VK_SUCCESS) {
+		throw std::runtime_error("failed to submit compute command buffer!");
 	}
 
 	//graphics submission
@@ -215,16 +215,13 @@ void VulkanRenderer::drawFrame() {
 	submitInfo = VkSubmitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	submitInfo.waitSemaphoreCount = 1;
+	submitInfo.waitSemaphoreCount = 2;
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
-
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
-
-	VkSemaphore signalSemaphores[] = {renderFinishedSemaphores[currentFrame]};
 	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores = signalSemaphores;
+	submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame];
 
 	if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
 		throw std::runtime_error("failed to submit draw command buffer!");
@@ -234,7 +231,7 @@ void VulkanRenderer::drawFrame() {
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
 	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = signalSemaphores;
+	presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame];
 
 	VkSwapchainKHR swapChains[] = {swapChain};
 	presentInfo.swapchainCount = 1;
@@ -255,6 +252,7 @@ void VulkanRenderer::drawFrame() {
 
 
 	currentFrame = ( currentFrame + 1 ) % framesInFlight; 
+
 
 }
 
@@ -291,59 +289,66 @@ void VulkanRenderer::createSyncObjects() {
 }
 
 void VulkanRenderer::updateUniformBuffer(uint32_t currentImage,  KeyboardHandler& keyboardHandler) {
-	static auto startTime = std::chrono::high_resolution_clock::now();
-	auto currentTime = std::chrono::high_resolution_clock::now();
-	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+	// static auto startTime = std::chrono::high_resolution_clock::now();
+	// auto currentTime = std::chrono::high_resolution_clock::now();
+	// float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
     
 
 
 
-	UniformBufferObject ubo{};
+	// UniformBufferObject ubo{};
 
-	// float oscillation_x = std::sin(time);
-	// float oscillation_y = std::cos(time);
+	// // float oscillation_x = std::sin(time);
+	// // float oscillation_y = std::cos(time);
 
-	//ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(sin(4 * (float)time) * 2, sin((float)time) * 4, cos((4 * (float)time)) * 2 ));
-	ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -0.5f));
-	ubo.model *= glm::rotate(glm::mat4(1.0f), glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	ubo.model *= glm::rotate(glm::mat4(1.0f), 3 * time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	// //ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(sin(4 * (float)time) * 2, sin((float)time) * 4, cos((4 * (float)time)) * 2 ));
+	// ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -0.5f));
+	// ubo.model *= glm::rotate(glm::mat4(1.0f), glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	// ubo.model *= glm::rotate(glm::mat4(1.0f), 3 * time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	
-	// ubo.model *= glm::rotate(glm::mat4(1.0f), 4 * time * glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	// // ubo.model *= glm::rotate(glm::mat4(1.0f), 4 * time * glm::radians(10.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-	std::cout << time << std::endl;
+	// std::cout << time << std::endl;
 	
 	
-	if (keyboardHandler.isKeyPressed(GLFW_KEY_W)) {
-        cameraZ += cameraSpeed;
-    }
-    if (keyboardHandler.isKeyPressed(GLFW_KEY_S)) {
-        cameraZ -= cameraSpeed;
-    }
-    if (keyboardHandler.isKeyPressed(GLFW_KEY_A)) {
-        cameraX += cameraSpeed;
-    }
-    if (keyboardHandler.isKeyPressed(GLFW_KEY_D)) {
-        cameraX -= cameraSpeed;
-    }
-    if (keyboardHandler.isKeyPressed(GLFW_KEY_Q)) {
-        cameraY += cameraSpeed;
-    }
-    if (keyboardHandler.isKeyPressed(GLFW_KEY_E)) {
-        cameraY -= cameraSpeed;
-    }
+	// if (keyboardHandler.isKeyPressed(GLFW_KEY_W)) {
+    //     cameraZ += cameraSpeed;
+    // }
+    // if (keyboardHandler.isKeyPressed(GLFW_KEY_S)) {
+    //     cameraZ -= cameraSpeed;
+    // }
+    // if (keyboardHandler.isKeyPressed(GLFW_KEY_A)) {
+    //     cameraX += cameraSpeed;
+    // }
+    // if (keyboardHandler.isKeyPressed(GLFW_KEY_D)) {
+    //     cameraX -= cameraSpeed;
+    // }
+    // if (keyboardHandler.isKeyPressed(GLFW_KEY_Q)) {
+    //     cameraY += cameraSpeed;
+    // }
+    // if (keyboardHandler.isKeyPressed(GLFW_KEY_E)) {
+    //     cameraY -= cameraSpeed;
+    // }
 
 
-	//ubo.view = glm::lookAt(glm::vec3(cameraX, cameraY, cameraZ), glm::vec3(0.0f + cameraX, 0.0f, 0.0f), cameraUp);
-	ubo.view = glm::translate(glm::mat4(1.0f), glm::vec3(cameraX, cameraY, cameraZ));
-	ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 30.0f);
-	ubo.proj[1][1] *= -1;
+	// //ubo.view = glm::lookAt(glm::vec3(cameraX, cameraY, cameraZ), glm::vec3(0.0f + cameraX, 0.0f, 0.0f), cameraUp);
+	// ubo.view = glm::translate(glm::mat4(1.0f), glm::vec3(cameraX, cameraY, cameraZ));
+	// ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 30.0f);
+	// ubo.proj[1][1] *= -1;
 
 
-	memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+	// memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 
 }
 
+
+void VulkanRenderer::updateUniformBuffer2(uint32_t currentImage, float lastFrameTime) {
+	UniformBufferObject ubo{};
+	ubo.deltaTime = lastFrameTime * 4.0f;
+
+	memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+}
 
 void VulkanRenderer::updateSwapChainResources(
 		VkSwapchainKHR newSwapChain,

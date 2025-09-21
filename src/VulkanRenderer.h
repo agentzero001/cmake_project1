@@ -42,7 +42,7 @@ class VulkanRenderer {
         ); 
 
         void createSyncObjects();
-        void drawFrame();
+        void drawFrame(float lastFrameTime);
         void updateSwapChainResources(
             VkSwapchainKHR swapChain,
             std::vector<VkFramebuffer> newSwapChainFramebuffers,
@@ -119,6 +119,7 @@ class VulkanRenderer {
         float cameraSpeed = 0.002f;
 
         void updateUniformBuffer(uint32_t currentFrame,  KeyboardHandler& keyboardHandler);
+        void updateUniformBuffer2(uint32_t currentFrame, float lastFrameTime);
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
 

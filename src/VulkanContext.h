@@ -46,6 +46,11 @@ class VulkanContext {
         void run();       
 
     private: 
+
+        float lastFrameTime;
+        double lastTime;
+
+
         GLFWwindow* _window;
         VkSurfaceKHR _surface;
         VkInstance instance;
