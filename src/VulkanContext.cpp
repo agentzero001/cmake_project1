@@ -48,9 +48,9 @@ void VulkanContext::mainLoop() {
     while (!glfwWindowShouldClose(_window)) {
         glfwPollEvents();
         m_Renderer->drawFrame(lastFrameTime);
-        double currentTime  = glfwGetTime();
-        lastFrameTime = (currentTime - lastTime) * 1000.0f;
-        lastTime = currentTime;
+        // double currentTime  = glfwGetTime();
+        // lastFrameTime = (currentTime - lastTime) * 1000.0f;
+        // lastTime = currentTime;
     }
     vkDeviceWaitIdle(device);
 }

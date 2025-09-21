@@ -172,7 +172,7 @@ void VulkanRenderer::drawFrame(float lastFrameTime) {
 	//Compute submission
 	vkWaitForFences(device, 1, &computeInFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
-	updateUniformBuffer2(currentFrame, lastFrameTime);//, VulkanRenderer::keyboardhandler);
+	updateUniformBuffer2(currentFrame);//, VulkanRenderer::keyboardhandler);
 
 	vkResetFences(device, 1, &computeInFlightFences[currentFrame]);
 	vkResetCommandBuffer(computeCommandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
@@ -343,9 +343,14 @@ void VulkanRenderer::updateUniformBuffer(uint32_t currentImage,  KeyboardHandler
 }
 
 
-void VulkanRenderer::updateUniformBuffer2(uint32_t currentImage, float lastFrameTime) {
+void VulkanRenderer::updateUniformBuffer2(uint32_t currentImage) {
+	static auto startTime = std::chrono::high_resolution_clock::now();
+	auto currentTime = std::chrono::high_resolution_clock::now();
+	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+	
 	UniformBufferObject ubo{};
-	ubo.deltaTime = lastFrameTime * 4.0f;
+	ubo.deltaTime = time / 8;
 
 	memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 }

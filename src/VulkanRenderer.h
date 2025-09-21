@@ -119,7 +119,7 @@ class VulkanRenderer {
         float cameraSpeed = 0.002f;
 
         void updateUniformBuffer(uint32_t currentFrame,  KeyboardHandler& keyboardHandler);
-        void updateUniformBuffer2(uint32_t currentFrame, float lastFrameTime);
+        void updateUniformBuffer2(uint32_t currentFrame);
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
 
