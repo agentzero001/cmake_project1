@@ -130,17 +130,24 @@ void VulkanDevice::createLogicalDevice() {
 	}
 
 
-    // VkPhysicalDeviceFeatures deviceFeatures{};
-    // deviceFeatures.samplerAnisotropy = VK_TRUE;
-    // deviceFeatures.sampleRateShading = VK_TRUE;
+    VkPhysicalDeviceFeatures deviceFeatures{};
+    deviceFeatures.samplerAnisotropy = VK_TRUE;
+    deviceFeatures.sampleRateShading = VK_TRUE;
 
 
-    
+
+    VkPhysicalDeviceVulkan13Features vulkan13Features{};
+    vulkan13Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
+    vulkan13Features.synchronization2 = VK_TRUE;
+    vulkan13Features.dynamicRendering = VK_TRUE;
+
+
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.pNext = &vulkan13Features;
     createInfo.pQueueCreateInfos = queueCreateInfos.data();
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
-    //createInfo.pEnabledFeatures = &deviceFeatures;
+    createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
     createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 

@@ -1,10 +1,10 @@
 #define GLFW_INCLUDE_VULKAN
-
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <cstdlib>
+#include <vulkan/vulkan_raii.hpp>
 
 
 static std::vector<char> readFile(const std::string& filename) {

@@ -155,8 +155,16 @@ void VulkanPipeline::createGraphicsPipeline() {
     }
 
 
+    vk::Format format = static_cast<vk::Format>(swapChainImageFormat);
+
+    vk::PipelineRenderingCreateInfo pipelineRenderingCreateInfo{};
+    pipelineRenderingCreateInfo.colorAttachmentCount = 1;
+    pipelineRenderingCreateInfo.pColorAttachmentFormats = &format;
+
+
     VkGraphicsPipelineCreateInfo pipelineInfo{};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    //pipelineInfo.pNext = &pipelineRenderingCreateInfo;
 	pipelineInfo.stageCount = 2;
 	pipelineInfo.pStages = shaderStages;
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
@@ -168,19 +176,23 @@ void VulkanPipeline::createGraphicsPipeline() {
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
-	pipelineInfo.renderPass = renderPass;
+	pipelineInfo.renderPass = renderPass; //dynamic rendering
 	pipelineInfo.subpass = 0;
   	//pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; //create pipeline by deriving from an existing one.
 	//pipelineInfo.basePipelineIndex = -1;
 
+    
 
+
+    
     //this function is actually designed to create multiple graphicsPipeline objects in a single call
     if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
     vkDestroyShaderModule(device, fragShaderModule, nullptr);
-	vkDestroyShaderModule(device, vertShaderModule, nullptr);    
+	vkDestroyShaderModule(device, vertShaderModule, nullptr);  
+
 }
 
 void VulkanPipeline::createComputePipeline() {

@@ -74,6 +74,8 @@ void VulkanContext::cleanup() {
 }
 
 
+
+
 void VulkanContext::createInstance() {
 
     if (enableValidationLayers && !checkValidationLayerSupport()) {
@@ -86,7 +88,7 @@ void VulkanContext::createInstance() {
 	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.pEngineName = "No Engine";
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.apiVersion = VK_API_VERSION_1_0;
+	appInfo.apiVersion = VK_API_VERSION_1_3;
 
 
     VkInstanceCreateInfo createInfo{};
@@ -166,9 +168,9 @@ void VulkanContext::setupResourceBuffers() {
         MAX_FRAMES_IN_FLIGHT
     );
 
-    // m_Resource->createTextureImage();
-    // m_Resource->createTextureImageView();
-    //m_Resource->createTextureSampler();
+    m_Resource->createTextureImage();
+    m_Resource->createTextureImageView();
+    m_Resource->createTextureSampler();
     //m_Resource->loadModel();
     //m_Resource->createVertexBuffer();
     //m_Resource->createIndexBuffer();
