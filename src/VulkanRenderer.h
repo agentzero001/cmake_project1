@@ -20,9 +20,7 @@ class VulkanRenderer {
             VkQueue presentQueue,
             VkQueue computeQueue,
             VkExtent2D swapChainExtent,
-            std::vector<VkFramebuffer> swapChainFramebuffers,
             VkSwapchainKHR swapChain,
-            VkRenderPass renderPass,
             VkPipeline graphicsPipeline,
             VkPipeline computePipeline,
             VkPipelineLayout pipelineLayout,
@@ -37,20 +35,22 @@ class VulkanRenderer {
             VkImageView colorImageView,
             std::vector<Vertex> vertices,
             std::vector<uint32_t> indices,
+            std::vector<VkImage> swapChainImages,
+	        std::vector<VkImageView> swapChainImageViews,
             VkDevice device,
             int framesInFlight,
             GLFWwindow* _window
+ 
         ); 
 
         void createSyncObjects();
-        void drawFrame(float lastFrameTime);
-        void updateSwapChainResources(
-            VkSwapchainKHR swapChain,
-            std::vector<VkFramebuffer> newSwapChainFramebuffers,
-            VkExtent2D newSwapChainExtent, 
-            VkImageView depthImageView,
-            VkImageView colorImageView
-        );
+        void drawFrame();
+        // void updateSwapChainResources(
+        //     VkSwapchainKHR swapChain,
+        //     VkExtent2D newSwapChainExtent, 
+        //     VkImageView depthImageView,
+        //     VkImageView colorImageView
+        // );
 
         void cleanup();
 
@@ -61,9 +61,9 @@ class VulkanRenderer {
 
         VkExtent2D swapChainExtent;
         std::vector<VkCommandBuffer> commandBuffers;
-        std::vector<VkCommandBuffer> computeCommandBuffers;
-        VkRenderPass renderPass;
-        std::vector<VkFramebuffer> swapChainFramebuffers;
+        std::vector<VkCommandBuffer> computeCommandBuffers;        
+        std::vector<VkImage> swapChainImages;
+        std::vector<VkImageView> swapChainImageViews;
         
         VkPipeline graphicsPipeline;
         VkPipeline computePipeline;
@@ -115,7 +115,6 @@ class VulkanRenderer {
         glm::vec3 cameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
         //glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
 
-        
 
         float cameraSpeed = 0.002f;
 
@@ -123,6 +122,16 @@ class VulkanRenderer {
         void updateUniformBuffer2(uint32_t currentFrame);
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void recordComputeCommandBuffer(VkCommandBuffer commandBuffer);
+        void transition_image_layout(
+            uint32_t imageIndex,
+            VkImageLayout oldLayout,
+            VkImageLayout newLayout,
+            VkAccessFlags2 srcAccessMask,
+            VkAccessFlags2 dstAccessMask,
+	        VkPipelineStageFlags2 srcStageMask,
+	        VkPipelineStageFlags2 dstStageMask,
+            VkCommandBuffer commandBuffer
+        );
 
         
         

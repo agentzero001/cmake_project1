@@ -32,7 +32,6 @@ class VulkanDevice {
         void createCommandPool();
         void createCommandBuffers(int size);
         void createComputeCommandBuffers(int size);
-        //void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void cleanupDevice();
         
         static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);

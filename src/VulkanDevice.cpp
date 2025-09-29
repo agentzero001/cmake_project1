@@ -206,15 +206,6 @@ void VulkanDevice::createComputeCommandBuffers(int size) {
 }
 
 
-// void VulkanDevice::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
-//     VkCommandBufferBeginInfo beginInfo{};
-//     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-//     //beginInfo.flags = 0;
-//     //beginInfo.pInheritanceInfo = nullptr;
-//   	if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
-// 		throw std::runtime_error("failed to begin recording command buffer!");
-// 	}
-//}
 
 
 VkSampleCountFlagBits VulkanDevice::getMaxUsableSampleCount() {

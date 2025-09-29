@@ -43,10 +43,8 @@ class VulkanPipeline {
         void createGraphicsPipeline();
 		void createComputePipeline();
 		void cleanupPipeline();
-		void createRenderPass();
 		VkPipeline getGraphicsPipeline() const { return graphicsPipeline; };
 		VkPipeline getComputePipeline() const { return computePipeline; };
-		VkRenderPass getRenderPass() const { return renderPass; };
 		VkPipelineLayout getPipelineLayout() const { return pipelineLayout; };
 		VkPipelineLayout getComputePipelineLayout() const { return computePipelineLayout; };
 
@@ -56,7 +54,6 @@ class VulkanPipeline {
 		VkFormat swapChainImageFormat;
 		VkPipelineLayout pipelineLayout;
 		VkPipelineLayout computePipelineLayout;
-		VkRenderPass renderPass;
 		VkPipeline graphicsPipeline;
 		VkPipeline computePipeline;
 		VkDescriptorSetLayout descriptorSetLayout;

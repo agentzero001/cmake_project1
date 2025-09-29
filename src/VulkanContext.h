@@ -42,7 +42,7 @@ class VulkanContext {
         VulkanSwapChain* m_SwapChain;
         bool framebufferResized = false;
         void updateSwapChain();
-        void recreateSwapChain(VkRenderPass renderPass);
+        void recreateSwapChain();
         void run();       
 
     private: 

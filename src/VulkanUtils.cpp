@@ -188,24 +188,17 @@ void transitionImageLayout(
 	barrier.subresourceRange.layerCount = 1;
 
 
-	// VkPipelineStageFlags2 sourceStage;
-	// VkPipelineStageFlags2 destinationStage;
-
 	if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
 		barrier.srcAccessMask = 0;
 		barrier.dstAccessMask = VK_ACCESS_2_TRANSFER_WRITE_BIT;
 		
 		barrier.srcStageMask = VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT;
 		barrier.dstStageMask = VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT;
-		// sourceStage = VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT;
-		// destinationStage = VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT;
 	}
 	else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
 		barrier.srcAccessMask = VK_ACCESS_2_TRANSFER_WRITE_BIT;
 		barrier.dstAccessMask = VK_ACCESS_2_SHADER_SAMPLED_READ_BIT;
 
-		// sourceStage = VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT;
-		// destinationStage = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
 		
 		barrier.srcStageMask = VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT;
 		barrier.dstStageMask  = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
@@ -221,15 +214,6 @@ void transitionImageLayout(
 	dependencyInfo.imageMemoryBarrierCount = 1;
 	dependencyInfo.pImageMemoryBarriers = &barrier;
 	
-
-	// vkCmdPipelineBarrier(
-	// 	commandBuffer,
-	// 	sourceStage, destinationStage,
-	// 	0,
-	// 	0, nullptr,
-	// 	0, nullptr,
-	// 	1, &barrier
-	// );
 
 	vkCmdPipelineBarrier2(commandBuffer, &dependencyInfo);
 

@@ -26,15 +26,16 @@ class VulkanSwapChain {
         );
 
         void createSwapChain();
-        //void recreateSwapChain(VkRenderPass renderPass, VkImageView depthImageView);
+        //void recreateSwapChain(VkImageView depthImageView);
         void createImageViews();
-        void createFramebuffers(VkRenderPass renderPass, VkImageView depthImageView, VkImageView colorImageView);
         void cleanupSwapChain();
         
         VkSwapchainKHR getswapChain() const { return swapChain; };
-        VkFormat getSwapChainImageFormat() const { return swapChainImageFormat; }
-        const std::vector<VkFramebuffer> getSwapChainFrameBuffers() const { return swapChainFramebuffers; }
+        VkFormat getSwapChainImageFormat() const { return swapChainImageFormat; };
         VkExtent2D getSwapChainExtent() const { return swapChainExtent; };
+        std::vector<VkImage> getSwapChainImages() const {return swapChainImages; };
+        std::vector<VkImageView> getSwapChainImageViews() const {return swapChainImageViews; };
+
 
     private: 
         VkSwapchainKHR swapChain;
@@ -47,7 +48,6 @@ class VulkanSwapChain {
 
         VkFormat swapChainImageFormat;
         QueueFamilyIndices indices;
-        std::vector<VkFramebuffer> swapChainFramebuffers;
         VkExtent2D swapChainExtent;
         VkImageView _depthImageView;
         

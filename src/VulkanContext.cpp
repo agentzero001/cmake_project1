@@ -47,7 +47,7 @@ void VulkanContext::initVulkan() {
 void VulkanContext::mainLoop() {
     while (!glfwWindowShouldClose(_window)) {
         glfwPollEvents();
-        m_Renderer->drawFrame(lastFrameTime);
+        m_Renderer->drawFrame();
         // double currentTime  = glfwGetTime();
         // lastFrameTime = (currentTime - lastTime) * 1000.0f;
         // lastTime = currentTime;
@@ -198,10 +198,8 @@ void VulkanContext::setupPipeline() {
         msaaSamples
     );
 
-    m_Pipeline->createRenderPass();
     m_Pipeline->createGraphicsPipeline();
     m_Pipeline->createComputePipeline();
-    m_SwapChain->createFramebuffers(m_Pipeline->getRenderPass(), m_Resource->getDepthImageView(), m_Resource->getColorImageView());
     
 }
 
@@ -214,9 +212,7 @@ void VulkanContext::setupRenderer() {
         m_VulkanDevice->getPresentQueue(),
         m_VulkanDevice->getComquteQueue(),
         m_SwapChain->getSwapChainExtent(),
-        m_SwapChain->getSwapChainFrameBuffers(),
         m_SwapChain->getswapChain(),
-        m_Pipeline->getRenderPass(),
         m_Pipeline->getGraphicsPipeline(),
         m_Pipeline->getComputePipeline(),
         m_Pipeline->getPipelineLayout(),
@@ -231,6 +227,8 @@ void VulkanContext::setupRenderer() {
         m_Resource->getColorImageView(),
         m_Resource->getVertices(),
         m_Resource->getIndices(),
+        m_SwapChain->getSwapChainImages(),
+        m_SwapChain->getSwapChainImageViews(),
         device,
         MAX_FRAMES_IN_FLIGHT,
         _window
@@ -257,12 +255,11 @@ std::vector<const char*> VulkanContext::getRequiredExtenstions() {
 
 
 void VulkanContext::updateSwapChain() {
-    recreateSwapChain(m_Pipeline->getRenderPass());
-    m_Renderer->updateSwapChainResources(m_SwapChain->getswapChain(), m_SwapChain->getSwapChainFrameBuffers(), m_SwapChain->getSwapChainExtent(), m_Resource->getDepthImageView(), m_Resource->getColorImageView());
+    // m_Renderer->updateSwapChainResources(m_SwapChain->getswapChain(), m_SwapChain->getSwapChainExtent(), m_Resource->getDepthImageView(), m_Resource->getColorImageView());
 }
 
 
-void VulkanContext::recreateSwapChain(VkRenderPass renderPass) {
+void VulkanContext::recreateSwapChain() {
 
     //apparently a bunch of resources still need to be cleaned up after this is being called
 
@@ -297,7 +294,6 @@ void VulkanContext::recreateSwapChain(VkRenderPass renderPass) {
     VkImageView depthImageView = m_Resource->getDepthImageView();
     VkImageView colorImageView = m_Resource->getColorImageView();
 
-	m_SwapChain->createFramebuffers(renderPass, depthImageView, colorImageView);
 	
 }
 
