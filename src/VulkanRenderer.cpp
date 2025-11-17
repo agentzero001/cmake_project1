@@ -270,6 +270,7 @@ void VulkanRenderer::recordComputeCommandBuffer(VkCommandBuffer commandBuffer) {
 
 void VulkanRenderer::drawFrame() {
 
+
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -357,11 +358,15 @@ void VulkanRenderer::drawFrame() {
 
 	currentFrame = ( currentFrame + 1 ) % framesInFlight; 
 
-
 }
 
 
 void VulkanRenderer::createSyncObjects() {
+
+
+	uint32_t swapChainImageCount = 0;
+	vkGetSwapchainImagesKHR(device, swapChain, &swapChainImageCount, nullptr);
+
 
 	
 	imageAvailableSemaphores.resize(framesInFlight);
@@ -455,7 +460,7 @@ void VulkanRenderer::updateUniformBuffer2(uint32_t currentImage) {
 
 	
 	UniformBufferObject ubo{};
-	ubo.deltaTime = time / 8;
+	ubo.deltaTime = time;
 
 	memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 }

@@ -1,5 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define TINYOBJLOADER_IMPLEMENTATION
+//#define TINYGLTF_IMPLEMENTATION
 #include "VulkanResource.h"
 #include "VulkanUtils.h"
 #include <vulkan/vulkan_raii.hpp>
@@ -312,8 +313,8 @@ void VulkanResource::createShaderStorageBuffers() {
 	for (auto& particle: particles) {
 		float r = .25f * sqrt(rndDist(rndEngine));
 		float theta = rndDist(rndEngine) * 2 * 3.14159265358979323846;
-		float x = r * cos(theta) / 16;
-		float y = r * sin(theta) / 16;
+		float x = r * cos(theta) ;
+		float y = r * sin(theta) ;
 		particle.pos = glm::vec2(x, y);
 		particle.velocity = glm::normalize(glm::vec2(x, y)) * .00025f;
 		particle.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine), rndDist(rndEngine), 1.0f);

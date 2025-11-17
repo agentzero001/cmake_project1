@@ -20,8 +20,8 @@ VulkanPipeline::VulkanPipeline(
 
 
 void VulkanPipeline::createGraphicsPipeline() {
-    auto vertShaderCode = readFile("C:/Users/jensm/Desktop/cmake_project1/res/shaders/vert.spv");
-    auto fragShaderCode = readFile("C:/Users/jensm/Desktop/cmake_project1/res/shaders/frag.spv");
+    auto vertShaderCode = readFile("E:/Users/jensm/Desktop/cmake_project1/res/shaders/vert.spv");
+    auto fragShaderCode = readFile("E:/Users/jensm/Desktop/cmake_project1/res/shaders/frag.spv");
 
     VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 	VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -194,7 +194,7 @@ void VulkanPipeline::createGraphicsPipeline() {
 }
 
 void VulkanPipeline::createComputePipeline() {
-    auto computeShaderCode = readFile("C:/Users/jensm/Desktop/cmake_project1/res/shaders/compute.spv");
+    auto computeShaderCode = readFile("E:/Users/jensm/Desktop/cmake_project1/res/shaders/compute.spv");
     
     VkShaderModule computeShaderModule = createShaderModule(computeShaderCode);
 

@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-set(VULKAN_SDK "C:/VulkanSDK/1.3.290.0")
+set(VULKAN_SDK "C:/VulkanSDK/1.4.328.1")
 
 
 find_package(Vulkan REQUIRED)
@@ -17,16 +17,18 @@ find_package(Vulkan REQUIRED)
 include_directories(${VULKAN_SDK}/Include)
 link_directories(${VULKAN_SDK}/Lib)
 
-include_directories("C:/Users/jensm/Desktop/local/visual studio/glfw-3.4.bin.WIN64/include")
-link_directories("C:/Users/jensm/Desktop/local/visual studio/glfw-3.4.bin.WIN64/lib-vc2022")
+include_directories("E:/Users/jensm/Desktop/local/visual studio/glfw-3.4.bin.WIN64/include")
+link_directories("E:/Users/jensm/Desktop/local/visual studio/glfw-3.4.bin.WIN64/lib-vc2022")
 
 
-include_directories("C:/Users/jensm/Desktop/local/glm-1.0.1")
+include_directories("E:/Users/jensm/Desktop/local/glm-1.0.1")
 
 
-include_directories("C:/Users/jensm/Documents/Visual Studio 2022/tinyobjloader-release")
+include_directories("E:/Users/jensm/Documents/Visual Studio 2022/tinyobjloader-release")
 
-include_directories("C:/Users/jensm/Documents/Visual Studio 2022/stb-master")
+include_directories("E:/Users/jensm/Documents/Visual Studio 2022/tinygltf-release")
+
+include_directories("E:/Users/jensm/Documents/Visual Studio 2022/stb-master")
 
 # Source files
 add_executable(cmake_project1

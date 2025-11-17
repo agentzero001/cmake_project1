@@ -1,6 +1,7 @@
 #include "VulkanContext.h"
 #include "VulkanRenderer.h"
 
+
 //#include <vulkan/vk_platform.h>
 
 //#include <vulkan/vulkan_raii.hpp>
@@ -171,9 +172,9 @@ void VulkanContext::setupResourceBuffers() {
     m_Resource->createTextureImage();
     m_Resource->createTextureImageView();
     m_Resource->createTextureSampler();
-    //m_Resource->loadModel();
-    //m_Resource->createVertexBuffer();
-    //m_Resource->createIndexBuffer();
+    m_Resource->loadModel();
+    m_Resource->createVertexBuffer();
+    m_Resource->createIndexBuffer();
     //m_Resource->createDescriptorSetLayout();
     m_Resource->createComputeDescriptorSetLayout();
     m_Resource->createShaderStorageBuffers();

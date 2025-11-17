@@ -1,7 +1,8 @@
 #pragma once
 
 //#define TINYOBJLOADER_IMPLEMENTATION
-
+#define TINYGLTF_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <vulkan/vulkan.h>
@@ -15,9 +16,11 @@
 #include <unordered_map>
 #include <glm/gtx/hash.hpp>
 #include <random>
+//#include <tiny_gltf.h>
 
-inline std::string MODEL_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/models/viking_room.obj";
-inline std::string TEXTURE_PATH = "C:/Users/jensm/Desktop/cmake_project1/res/textures/viking_room.png";
+
+inline std::string MODEL_PATH = "E:/Users/jensm/Desktop/cmake_project1/res/models/viking_room.obj";
+inline std::string TEXTURE_PATH = "E:/Users/jensm/Desktop/cmake_project1/res/textures/viking_room.png";
 
 
 const uint32_t PARTICLE_COUNT = 4096 * 2;

@@ -30,7 +30,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 32,
+				"line" : 34,
 				"parent" : 0
 			},
 			{
@@ -48,7 +48,7 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 54,
+				"line" : 56,
 				"parent" : 0
 			},
 			{
@@ -80,6 +80,12 @@
 				"file" : 0,
 				"line" : 29,
 				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 31,
+				"parent" : 0
 			}
 		]
 	},
@@ -96,23 +102,27 @@
 			[
 				{
 					"backtrace" : 5,
-					"path" : "C:/VulkanSDK/1.3.290.0/Include"
+					"path" : "C:/VulkanSDK/1.4.328.1/Include"
 				},
 				{
 					"backtrace" : 6,
-					"path" : "C:/Users/jensm/Desktop/local/visual studio/glfw-3.4.bin.WIN64/include"
+					"path" : "E:/Users/jensm/Desktop/local/visual studio/glfw-3.4.bin.WIN64/include"
 				},
 				{
 					"backtrace" : 7,
-					"path" : "C:/Users/jensm/Desktop/local/glm-1.0.1"
+					"path" : "E:/Users/jensm/Desktop/local/glm-1.0.1"
 				},
 				{
 					"backtrace" : 8,
-					"path" : "C:/Users/jensm/Documents/Visual Studio 2022/tinyobjloader-release"
+					"path" : "E:/Users/jensm/Documents/Visual Studio 2022/tinyobjloader-release"
 				},
 				{
 					"backtrace" : 9,
-					"path" : "C:/Users/jensm/Documents/Visual Studio 2022/stb-master"
+					"path" : "E:/Users/jensm/Documents/Visual Studio 2022/tinygltf-release"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "E:/Users/jensm/Documents/Visual Studio 2022/stb-master"
 				}
 			],
 			"language" : "CXX",
@@ -149,17 +159,21 @@
 				"role" : "flags"
 			},
 			{
-				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:console",
+				"fragment" : "/machine:x64 /debug /INCREMENTAL",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/subsystem:console",
 				"role" : "flags"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "-LIBPATH:C:\\VulkanSDK\\1.3.290.0\\Lib",
+				"fragment" : "-LIBPATH:C:\\VulkanSDK\\1.4.328.1\\Lib",
 				"role" : "libraryPath"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "-LIBPATH:C:\\Users\\jensm\\Desktop\\local\\VISUAL~1\\GLFW-3~1.WIN\\LI0A5A~1",
+				"fragment" : "-LIBPATH:E:\\Users\\jensm\\Desktop\\local\\VISUAL~1\\GLFW-3~1.WIN\\LI0A5A~1",
 				"role" : "libraryPath"
 			},
 			{
